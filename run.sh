@@ -2,7 +2,7 @@
 lex test.lex
 yacc -d test.yacc
 clang -o test y.tab.c lex.yy.c
-clear
+# clear
 echo "OUT"
 ./test < test.pl
 echo

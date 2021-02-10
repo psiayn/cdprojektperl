@@ -4,7 +4,7 @@
 int lineno;
 %}
 
-%token STRING USE PRINT NUMBER SEMI IDENTIFIER VAR VARNAME EQ ARRNAME
+%token STRING USE PRINT NUMBER SEMI IDENTIFIER VAR VARNAME EQ ARRNAME OP CL COMMA BLOCKOP BLOCKCL UNTIL LT GT EQV
 
 %%
 start: 
@@ -19,6 +19,8 @@ command:
        variable_declaration
        |
        array_declaration
+       |
+       until
        ;
 use:
        USE IDENTIFIER SEMI {
@@ -54,20 +56,63 @@ array_declaration:
 	 printf("Array declared\n");
        }
        |
-       VAR ARRNAME EQ '(' array_inner ')' {
+       VAR ARRNAME EQ OP array_init CL SEMI {
 	 printf("Array initialized\n");
        }
        ;
-
-array_inner:
-       STRING ',' array_inner
+array_init:
+       STRING COMMA array_init
+       |
+       NUMBER COMMA array_init
        |
        STRING
        |
        NUMBER
-       |
-       NUMBER ',' array_inner
        ;
+until:
+       UNTIL OP expr CL BLOCKOP start BLOCKCL {
+	 printf("until case\n");
+       }
+       ;
+
+expr:
+       VARNAME GT NUMBER
+       |
+       VARNAME LT NUMBER
+       |
+       VARNAME EQV NUMBER
+       |
+       VARNAME GT EQ NUMBER
+       |
+       VARNAME LT EQ NUMBER
+       |
+       VARNAME GT VARNAME
+       |
+       VARNAME LT VARNAME
+       |
+       VARNAME EQV VARNAME
+       |
+       VARNAME GT EQ VARNAME
+       |
+       VARNAME LT EQ VARNAME
+       |
+       VARNAME EQV STRING
+       |
+       VARNAME
+       |
+       NUMBER GT NUMBER
+       |
+       NUMBER LT NUMBER
+       |
+       NUMBER EQV NUMBER
+       |
+       NUMBER GT EQ NUMBER
+       |
+       NUMBER LT EQ NUMBER
+       ;
+
+
+       
 %%
 
 
@@ -82,3 +127,7 @@ int yywrap() {
 main(void) {
   yyparse();
 }
+
+/*
+
+*/
