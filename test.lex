@@ -11,6 +11,7 @@ use          return USE;
 print        return PRINT;
 my           return VAR;
 until        return UNTIL;
+foreach      return FOREACH;
 $[A-Za-z]+   return VARNAME;
 @[A-Za-z]+   return ARRNAME;
 \=            return EQ;

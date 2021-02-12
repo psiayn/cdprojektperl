@@ -4,7 +4,7 @@
 int lineno;
 %}
 
-%token STRING USE PRINT NUMBER SEMI IDENTIFIER VAR VARNAME EQ ARRNAME OP CL COMMA BLOCKOP BLOCKCL UNTIL LT GT EQV
+%token STRING USE PRINT NUMBER SEMI IDENTIFIER VAR VARNAME EQ ARRNAME OP CL COMMA BLOCKOP BLOCKCL UNTIL LT GT EQV FOREACH
 
 %%
 start: 
@@ -21,6 +21,8 @@ command:
        array_declaration
        |
        until
+       |
+       foreach
        ;
 use:
        USE IDENTIFIER SEMI {
@@ -74,6 +76,11 @@ until:
 	 printf("until case\n");
        }
        ;
+
+foreach:
+        FOREACH OP ARRNAME CL BLOCKOP start BLOCKCL {
+         printf("foreach found\n");
+       }
 
 expr:
        VARNAME GT NUMBER

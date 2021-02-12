@@ -22,3 +22,7 @@ until ( $test == $bruh ){
 	use kekew;
     }
 }
+
+foreach (@animals) {
+    print "$_\t";
+}
