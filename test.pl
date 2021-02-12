@@ -6,6 +6,7 @@ print "Hello World!\n";
 print 42;
 print "bruh\n";
 my $test;
+my $a;
 my $lol = "brr";
 my $help = 7336;
 my @henlo = ("string", "bruh");
@@ -21,4 +22,8 @@ until ( $test == $bruh ){
     until ( $test == "for") {
 	use kekew;
     }
+}
+
+foreach (@animals) {
+    print "$_\t";
 }
