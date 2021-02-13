@@ -31,6 +31,11 @@ tokens = (
     "COMMENT",
 ) + tuple(reserved.values())
 
+# list of possible states
+states = (
+        ('code', 'exclusive')
+)
+
 # specifying regex for simple tokens
 t_PLS = r'\+'
 t_MIN = r'\-'
@@ -42,8 +47,8 @@ t_GT = r'\>'
 t_EQ = r'\='
 t_OP = r'\('
 t_CL = r'\)'
-t_BLOCKOP = r'\{'
-t_BLOCKCL = r'\}'
+# t_BLOCKOP = r'\{'
+# t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
 t_STRING = r'\".*\"'
 
