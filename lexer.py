@@ -6,6 +6,7 @@ reserved = {
     'use': 'USE',
     'print': 'PRINT',
     'my' : 'MY',
+    'until' : 'UNTIL'
 }
 
 # list of token names
@@ -32,9 +33,9 @@ tokens = (
 ) + tuple(reserved.values())
 
 # list of possible states
-states = (
-        ('code', 'exclusive')
-)
+# states = (
+#         ('code', 'exclusive')
+# )
 
 # specifying regex for simple tokens
 t_PLS = r'\+'
@@ -47,8 +48,8 @@ t_GT = r'\>'
 t_EQ = r'\='
 t_OP = r'\('
 t_CL = r'\)'
-# t_BLOCKOP = r'\{'
-# t_BLOCKCL = r'\}'
+t_BLOCKOP = r'\{'
+t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
 t_STRING = r'\".*\"'
 
@@ -88,14 +89,14 @@ def t_COMMENT(t):
 lexer = lex.lex()
 
 
-data = None
-with open("test.pl", encoding = 'utf-8') as f:
-    data = f.read()
-
-lexer.input(data)
-
-while True:
-    tok = lexer.token()
-    if not tok:
-        break
-    print(tok.type, tok.value, tok.lineno, tok.lexpos)
+if __name__ == "__main__":
+    data = None
+    with open("test.pl", encoding = 'utf-8'):
+        data = f.read()
+    
+    lexer.input(data)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        print(tok.type, tok.value, tok.lineno, tok.lexpos)
