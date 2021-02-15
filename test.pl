@@ -19,11 +19,9 @@ until ( $test == $bruh ){
     print "hi";
     use bruh;
     # bruh
-    until ( $test == "for") {
+    my @send_help;
+    until ( $test == "yamero" ) {
 	use kekew;
     }
 }
 
-foreach (@animals) {
-    print "$_\t";
-}

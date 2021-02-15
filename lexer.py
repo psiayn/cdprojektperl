@@ -55,7 +55,7 @@ t_STRING = r'\".*\"'
 
 # regex rules + other actions
 def t_NUMBER(t):
-    r'\d+'
+    r'\d+[.\d+]?'
     t.value = int(t.value)
     return t
 
@@ -91,7 +91,7 @@ lexer = lex.lex()
 
 if __name__ == "__main__":
     data = None
-    with open("test.pl", encoding = 'utf-8'):
+    with open("test.pl", encoding = 'utf-8') as f:
         data = f.read()
     
     lexer.input(data)

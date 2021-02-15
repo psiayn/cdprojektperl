@@ -2,8 +2,8 @@ from ply import yacc
 from lexer import tokens
 import sys
 
-def cprint(ptype: str, line_start: int, line_end: int, pos_start: int, pos_end: int):
-    print("<",ptype,", (",line_start, ",", line_end,"), (",pos_start, ",", pos_end,")>")
+def cprint(ptype: str, start: int, end: int ):
+    print("<",ptype,", ", start, ", ", end,">", sep="")
 
 def p_start(p):
     """
@@ -26,22 +26,32 @@ def p_use(p):
     """
     use : USE ID SEMI
     """
-    cprint("use statement", p.lineno(1), p.lineno(3), p.lexpos(1), p.lexpos(3))
+    cprint("use statement", p.lineno(1), p.lineno(3))
 
-def p_var_decl(p):
+def p_var_decl(p: yacc.YaccProduction):
     """
     var_decl : MY VARNAME SEMI
              | MY VARNAME EQ STRING SEMI
              | MY VARNAME EQ NUMBER SEMI
     """
-    cprint("variable declaration")
+    if (len(p) == 4):
+        cprint("variable declaration", p.lineno(1), p.lineno(3))
+    elif (len(p) == 6):
+        cprint("variable declaration", p.lineno(1), p.lineno(5))
+    else:
+        print("variable declaration", p.lineno(1))
 
 def p_arr_decl(p):
     """
     arr_decl : MY ARRNAME SEMI
              | MY ARRNAME EQ OP array_init CL SEMI
     """
-    cprint(p, "array declaration")
+    if (len(p) == 4):
+        cprint("array declaration", p.lineno(1), p.lineno(3))
+    elif (len(p) == 8):
+        cprint("array declaration", p.lineno(1), p.lineno(7))
+    else:
+        print("array declaration", p.lineno(1), len(p) )
 
 def p_array_init(p):
     """
@@ -54,17 +64,24 @@ def p_array_init(p):
 
 def p_until(p):
     """
-    until : UNTIL OP expr CL BLOCKOP command BLOCKCL
+    until : UNTIL OP expr CL BLOCKOP block BLOCKCL 
     """
-    cprint(p, "until block")
+    cprint("until block", p.lineno(1), p.lineno(7))
+    
 
+def p_block(p):
+    """
+    block : block command
+          | empty
+    """
+    pass
     
 def p_print(p):
     """
     print : PRINT STRING SEMI
          | PRINT NUMBER SEMI
     """
-    cprint(p, "print statement")
+    cprint("print statement", p.lineno(1), p.lineno(3))
 
 def p_expr(p):
     """
@@ -74,6 +91,7 @@ def p_expr(p):
          | VARNAME GT EQ NUMBER
          | VARNAME LT EQ NUMBER
          | VARNAME EQ EQ VARNAME
+         | VARNAME EQ EQ STRING
          | VARNAME GT EQ VARNAME
          | VARNAME LT EQ VARNAME
          | VARNAME GT VARNAME
@@ -86,7 +104,15 @@ def p_expr(p):
          | NUMBER LT EQ NUMBER
          | STRING EQ EQ NUMBER
     """
-    cprint(p, "expr")
+    if (len(p) == 2):
+        cprint("expr", p.lineno(1), p.lineno(1))
+    elif(len(p) == 4):
+        cprint("expr", p.lineno(1), p.lineno(3))
+    elif (len(p) == 5):
+        cprint("expr", p.lineno(1), p.lineno(4))
+    else:
+        print("expr")
+
     
 def p_empty(p):
     """
@@ -95,7 +121,7 @@ def p_empty(p):
     pass
 
 def p_error(p):
-    print("syntax error")
+    print("syntax error", p.lineno)
 
 parser = yacc.yacc(debug=True)
 
