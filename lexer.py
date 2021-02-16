@@ -6,7 +6,7 @@ reserved = {
     'use': 'USE',
     'print': 'PRINT',
     'my' : 'MY',
-    'until' : 'UNTIL'
+    'until' : 'UNTIL',
     'foreach' : 'FOREACH'
 }
 
