@@ -56,9 +56,9 @@ def p_arr_decl(p):
 def p_array_init(p):
     """
     array_init : STRING COMMA array_init
-                | NUMBER COMMA array_init
-                | STRING 
-                | NUMBER
+               | NUMBER COMMA array_init
+               | STRING 
+               | NUMBER
     """
     pass
 

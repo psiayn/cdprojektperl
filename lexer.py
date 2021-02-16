@@ -56,7 +56,7 @@ t_STRING = r'\".*\"'
 # regex rules + other actions
 def t_NUMBER(t):
     r'\d+[.\d+]?'
-    t.value = int(t.value)
+    t.value = float(t.value)
     return t
 
 def t_newline(t):

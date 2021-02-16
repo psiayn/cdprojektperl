@@ -14,7 +14,7 @@ my @animals = ("camel", "llama", "owl");
 my @numbers = (23, 12, 123);
 my @mixed = ("bruh", 8008, 5.35);
 
-print $animals[0], " ", $animals[1], "\n";
+# print $animals[0], " ", $animals[1], "\n";
 
 my $i = 0;
 until ($i == 5) {
