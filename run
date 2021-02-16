@@ -1,0 +1,2 @@
+python parser.py test.pl
+python parser.py basics.pl
