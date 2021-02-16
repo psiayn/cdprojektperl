@@ -7,6 +7,7 @@ reserved = {
     'print': 'PRINT',
     'my' : 'MY',
     'until' : 'UNTIL'
+    'foreach' : 'FOREACH'
 }
 
 # list of token names

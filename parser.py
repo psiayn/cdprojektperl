@@ -19,6 +19,7 @@ def p_command(p):
             | var_decl 
             | arr_decl 
             | until
+            | foreach
     """
     pass
 
@@ -67,7 +68,13 @@ def p_until(p):
     until : UNTIL OP expr CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
-    
+
+def p_foreach(p):
+    """
+    foreach : FOREACH OP ARRNAME CL BLOCKOP block BLOCKCL
+            | FOREACH OP array_init CL BLOCKOP block BLOCKCL
+    """
+    cprint("foreach block", p.lineno(1), p.lineno(7))
 
 def p_block(p):
     """
