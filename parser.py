@@ -58,8 +58,12 @@ def p_array_init(p):
     """
     array_init : STRING COMMA array_init
                | NUMBER COMMA array_init
+               | FLOAT COMMA array_init
+               | FLOAT
                | STRING 
                | NUMBER
+               | varinf
+               
     """
     pass
 
@@ -87,8 +91,18 @@ def p_print(p):
     """
     print : PRINT STRING SEMI
          | PRINT NUMBER SEMI
+         | PRINT varinf SEMI
+         | PRINT array_init SEMI
+    
     """
     cprint("print statement", p.lineno(1), p.lineno(3))
+
+def p_varinf(p):
+    """
+    varinf : VARNAME COMMA STRING 
+         | VARNAME COMMA varinf
+         | VARNAME
+    """
 
 def p_expr(p):
     """

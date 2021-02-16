@@ -7,12 +7,16 @@ print 42;
 
 my $animal = "neko";
 my $answer = 13;
+my @homie = ("chirag","psyian");
 
-print $animal, $answer, "\n";
+print $animal, $answer;
+print "lmao","rofl", $animal;
+
+# print $homie[0],$homie[1];
 
 my @animals = ("camel", "llama", "owl");
 my @numbers = (23, 12, 123);
-my @mixed = ("bruh", 8008, 5.35);
+my @mixed = ("bruh", 8008,5.5);
 
 # print $animals[0], " ", $animals[1], "\n";
 
