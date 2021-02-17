@@ -45,7 +45,7 @@ def p_var_decl(p: yacc.YaccProduction):
 def p_arr_decl(p):
     """
     arr_decl : MY ARRNAME SEMI
-             | MY ARRNAME EQ OP array_init CL SEMI
+             | MY ARRNAME EQ OP handle_types CL SEMI
     """
     if (len(p) == 4):
         cprint("array declaration", p.lineno(1), p.lineno(3))
@@ -53,19 +53,6 @@ def p_arr_decl(p):
         cprint("array declaration", p.lineno(1), p.lineno(7))
     else:
         print("array declaration", p.lineno(1), len(p) )
-
-def p_array_init(p):
-    """
-    array_init : STRING COMMA array_init
-               | NUMBER COMMA array_init
-               | FLOAT COMMA array_init
-               | FLOAT
-               | STRING 
-               | NUMBER
-               | varinf
-               
-    """
-    pass
 
 def p_until(p):
     """
@@ -76,7 +63,7 @@ def p_until(p):
 def p_foreach(p):
     """
     foreach : FOREACH OP ARRNAME CL BLOCKOP block BLOCKCL
-            | FOREACH OP array_init CL BLOCKOP block BLOCKCL
+            | FOREACH OP handle_types CL BLOCKOP block BLOCKCL
     """
     cprint("foreach block", p.lineno(1), p.lineno(7))
 
@@ -86,23 +73,26 @@ def p_block(p):
           | empty
     """
     pass
-    
+
+
 def p_print(p):
     """
-    print : PRINT STRING SEMI
-         | PRINT NUMBER SEMI
-         | PRINT varinf SEMI
-         | PRINT array_init SEMI
-    
+    print : PRINT handle_types SEMI
     """
     cprint("print statement", p.lineno(1), p.lineno(3))
 
-def p_varinf(p):
+def p_handle_types(p):
     """
-    varinf : VARNAME COMMA STRING 
-         | VARNAME COMMA varinf
-         | VARNAME
+    handle_types : STRING COMMA handle_types
+             | VARNAME COMMA handle_types
+             | NUMBER COMMA handle_types
+             | FLOAT COMMA handle_types
+             | VARNAME 
+             | NUMBER 
+             | FLOAT 
+             | STRING  
     """
+    pass
 
 def p_expr(p):
     """
