@@ -8,6 +8,7 @@ print "bruh\n";
 my $test;
 my $a;
 my $lol = "brr";
+my $kill = 123.124;
 my $help = 7336;
 my @henlo = ("string", "bruh");
 my @a = (12);

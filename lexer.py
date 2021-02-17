@@ -58,12 +58,7 @@ t_STRING = r'\".*\"'
 # regex rules + other actions
 
 def t_NUMBER(t):
-    r'\d+[.\d+]?'
-    t.value = float(t.value)
-    return t
-
-def t_FLOAT(t):
-    r'(\d*[.])?\d+'
+    r'\d+(\.\d+)?'
     t.value = float(t.value)
     return t
 
