@@ -89,11 +89,7 @@ def t_VARNAME(t):
 def t_ARRNAME(t):
     r'\@[a-zA-Z_][a-zA-Z_0-9]*'
     return t
-'''
-def t_ARRAY_ELE(t):
-    r'\$[a-zA-Z_][a-zA-Z_0-9]*\[[0-9]+\]'
-    return t
-'''
+
 def t_INCREMENT(t):
     r'(\++)'
     return t

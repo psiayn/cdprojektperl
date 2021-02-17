@@ -5,9 +5,11 @@ use warnings;
 print "Hello World!\n";
 print 42;
 
+my $iter = 3;
 my $animal = "neko";
 my $answer = 13;
 my @homie = ("chirag","psyian");
+my @newarr = (1,2,3,4,5);
 
 print $animal, $answer;
 print "lmao","rofl", $animal;
@@ -34,6 +36,12 @@ foreach (@animals) {
 }
 
 print "\n";
+
+until ($newarr[0] == 3)
+{
+    print $iter;
+    $newarr[0]++;
+}
 
 foreach (@numbers) {
     print "$_\t";
