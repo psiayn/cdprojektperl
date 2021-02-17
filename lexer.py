@@ -27,6 +27,8 @@ tokens = (
     "BLOCKCL",
     "COMMA",
     "EQ",
+    "INCREMENT",
+    "DECREMENT",
     "PLS",
     "MIN",
     "MUL",
@@ -84,6 +86,13 @@ def t_ARRNAME(t):
     r'\@[a-zA-Z_][a-zA-Z_0-9]*'
     return t
 
+def t_INCREMENT(t):
+    r'(\++)'
+    return t
+
+def t_DECREMENT(t):
+    r'(\--)'
+    return t
 
 def t_COMMENT(t):
     r'\#.*'

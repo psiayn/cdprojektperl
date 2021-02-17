@@ -17,7 +17,8 @@ def p_command(p):
     command : use 
             | print 
             | var_decl 
-            | arr_decl 
+            | arr_decl
+            | var_op 
             | until
             | foreach
     """
@@ -54,11 +55,28 @@ def p_arr_decl(p):
     else:
         print("array declaration", p.lineno(1), len(p) )
 
+def p_var_op(p):
+    """
+    var_op : VARNAME EQ STRING SEMI
+           | VARNAME EQ NUMBER SEMI
+           | VARNAME INCREMENT SEMI
+           | VARNAME DECREMENT SEMI
+           | INCREMENT VARNAME SEMI
+           | DECREMENT VARNAME SEMI
+    """
+    if(p[2] == '='):
+        cprint("Variable reassignment", p.lineno(1), p.lineno(4))
+    elif(p[2] == '++' or p[1] == '++'):
+        cprint("Variable increment", p.lineno(1), p.lineno(3))
+    elif(p[2] == '--' or p[1] == '--'):
+        cprint("Variable decrement", p.lineno(1), p.lineno(3))
+
 def p_until(p):
     """
     until : UNTIL OP expr CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
+    
 
 def p_foreach(p):
     """
@@ -73,7 +91,6 @@ def p_block(p):
           | empty
     """
     pass
-
 
 def p_print(p):
     """
