@@ -23,6 +23,8 @@ tokens = (
     "GT",
     "OP",
     "CL",
+    "INDEXOP",
+    "INDEXCL",
     "BLOCKOP",
     "BLOCKCL",
     "COMMA",
@@ -52,6 +54,8 @@ t_GT = r'\>'
 t_EQ = r'\='
 t_OP = r'\('
 t_CL = r'\)'
+t_INDEXOP = r'\['
+t_INDEXCL = r'\]'
 t_BLOCKOP = r'\{'
 t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
@@ -85,7 +89,11 @@ def t_VARNAME(t):
 def t_ARRNAME(t):
     r'\@[a-zA-Z_][a-zA-Z_0-9]*'
     return t
-
+'''
+def t_ARRAY_ELE(t):
+    r'\$[a-zA-Z_][a-zA-Z_0-9]*\[[0-9]+\]'
+    return t
+'''
 def t_INCREMENT(t):
     r'(\++)'
     return t
@@ -103,7 +111,7 @@ lexer = lex.lex()
 
 if __name__ == "__main__":
     data = None
-    with open("test.pl", encoding = 'utf-8') as f:
+    with open("basics.pl", encoding = 'utf-8') as f:
         data = f.read()
     
     lexer.input(data)

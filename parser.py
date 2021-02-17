@@ -57,18 +57,30 @@ def p_arr_decl(p):
 
 def p_var_op(p):
     """
-    var_op : VARNAME EQ STRING SEMI
+    var_op : VARNAME INDEXOP NUMBER INDEXCL EQ STRING SEMI
+           | VARNAME INDEXOP NUMBER INDEXCL EQ NUMBER SEMI
+           | VARNAME INDEXOP VARNAME INDEXCL EQ STRING SEMI
+           | VARNAME INDEXOP VARNAME INDEXCL EQ NUMBER SEMI
+           | VARNAME EQ STRING SEMI
            | VARNAME EQ NUMBER SEMI
+           | VARNAME INDEXOP NUMBER INDEXCL INCREMENT SEMI
+           | VARNAME INDEXOP VARNAME INDEXCL INCREMENT SEMI
            | VARNAME INCREMENT SEMI
+           | VARNAME INDEXOP NUMBER INDEXCL DECREMENT SEMI
+           | VARNAME INDEXOP VARNAME INDEXCL DECREMENT SEMI
            | VARNAME DECREMENT SEMI
+           | INCREMENT VARNAME INDEXOP NUMBER INDEXCL SEMI
+           | INCREMENT VARNAME INDEXOP VARNAME INDEXCL SEMI
+           | DECREMENT VARNAME INDEXOP NUMBER INDEXCL SEMI
+           | DECREMENT VARNAME INDEXOP VARNAME INDEXCL SEMI
            | INCREMENT VARNAME SEMI
            | DECREMENT VARNAME SEMI
     """
-    if(p[2] == '='):
+    if('=' in p):
         cprint("Variable reassignment", p.lineno(1), p.lineno(4))
-    elif(p[2] == '++' or p[1] == '++'):
+    elif('++' in p):
         cprint("Variable increment", p.lineno(1), p.lineno(3))
-    elif(p[2] == '--' or p[1] == '--'):
+    elif('--' in p):
         cprint("Variable decrement", p.lineno(1), p.lineno(3))
 
 def p_until(p):
@@ -100,10 +112,14 @@ def p_print(p):
 
 def p_handle_types(p):
     """
-    handle_types : STRING COMMA handle_types
+    handle_types : VARNAME INDEXOP NUMBER INDEXCL COMMA handle_types
+             | VARNAME INDEXOP VARNAME INDEXCL COMMA handle_types
+             | STRING COMMA handle_types
              | VARNAME COMMA handle_types
              | NUMBER COMMA handle_types
              | FLOAT COMMA handle_types
+             | VARNAME INDEXOP NUMBER INDEXCL
+             | VARNAME INDEXOP VARNAME INDEXCL
              | VARNAME 
              | NUMBER 
              | FLOAT 
