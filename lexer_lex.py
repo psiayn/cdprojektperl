@@ -102,10 +102,8 @@ def t_COMMENT(t):
     r'\#.*'
     pass
 
-lexer = lex.lex()
-
-
 if __name__ == "__main__":
+    lexer = lex.lex()
     data = None
     with open("basics.pl", encoding = 'utf-8') as f:
         data = f.read()

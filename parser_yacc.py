@@ -1,5 +1,5 @@
 from ply import yacc
-from lexer import tokens
+from lexer_lex import tokens
 import sys
 
 def cprint(ptype: str, start: int, end: int ):
@@ -182,9 +182,9 @@ def p_empty(p):
 def p_error(p):
     print("syntax error", p.lineno)
 
-parser = yacc.yacc(debug=True)
 
 if __name__ == "__main__":
+    parser = yacc.yacc(debug=True)
     with open(sys.argv[1], "rt") as f:
         result = parser.parse(f.read())
         print(result)
