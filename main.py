@@ -31,18 +31,16 @@ for tok in lexer:
             name = str(tok.value).strip('@')
         try:
             old = sym_table.lookup(name)
-            if 'my' not in items:
-                print("spront", old)
-            else: 
-                print("PREVIOUS SYMBOL IS", old)
+            if 'my' in items:
+                sym_table.insert(name, {'token' : tok.value,'line': tok.lineno, 'type' : tok.type, 'scope': "global"})
         except:
-            print(end="")
-        sym_table.insert(name, {'token' : tok.value,'line': tok.lineno, 'type' : tok.type, 'scope': "global"})
+            sym_table.insert(name, {'token' : tok.value,'line': tok.lineno, 'type' : tok.type, 'scope': "global"})
+
     elif(tok.type == 'BLOCKOP'):
         scope_name = ''
-        if 'UNTIL' in items:
+        if 'until' in items:
             scope_name = 'until'
-        elif 'FOREACH' in items:
+        elif 'foreach' in items:
             scope_name = 'foreach'
         level = find_most_recent_scope(scope_name)
         scope_name = ''.join([scope_name, str(level+1)])

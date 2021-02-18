@@ -28,7 +28,7 @@ class symbol_table:
         if symbol not in self.symbols:
             self.symbols[symbol] = token
         else:
-            pre = self.symbols[symbol]
+            pre = self.lookup(symbol)
             print("ERROR! SYMBOL ~", symbol, "~ AT LINE ", token['line'], " ALREADY EXISTS AT LINE ", pre['line'], sep="")
 
     def lookup(self, symbol):
