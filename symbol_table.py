@@ -43,7 +43,7 @@ class symbol_table:
     def get_parent(self):
         return self.parent
 
-    def put_child(self, name, child): # eg. name = 'if_scope_1', child = the symbol_table object of the scope
+    def put_child(self, name, child):
         self.children[name] = child
 
     def get_child(self, name):
@@ -53,7 +53,7 @@ class symbol_table:
         return self.children.keys()
 
     def print_table(self):
-        print ("Table :  ", self.name)		
+        print ("Table :  ", self.name)
         for i in self.symbols:
             print(i , self.symbols[i])
         print()	

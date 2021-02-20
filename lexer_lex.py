@@ -60,7 +60,6 @@ t_BLOCKOP = r'\{'
 t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
 t_STRING = r'\".*\"'
-
 # regex rules + other actions
 
 def t_NUMBER(t):
@@ -70,12 +69,14 @@ def t_NUMBER(t):
 
 def t_newline(t):
     r'\n'
+#    print("t.value =", len(t.value))
     t.lexer.lineno += len(t.value)
 
 t_ignore = '\t '
 
 def t_error(t):
     print("Illegal character '%s'"%t.value[0])
+    t.lexer.skip(2)
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -105,7 +106,7 @@ def t_COMMENT(t):
 if __name__ == "__main__":
     lexer = lex.lex()
     data = None
-    with open("basics.pl", encoding = 'utf-8') as f:
+    with open("test.pl", encoding = 'utf-8') as f:
         data = f.read()
     
     lexer.input(data)
