@@ -3,7 +3,7 @@ import sys
 import os
 import lexer_lex
 import parser_yacc
-from symbol_table import symbol_table, table_stack, find_most_recent_scope
+from constructs.symbol_table import symbol_table, table_stack, find_most_recent_scope
 
 lexer = lex.lex(module=lexer_lex)
 
