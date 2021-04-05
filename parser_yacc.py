@@ -189,6 +189,8 @@ def p_expr_bin_op(p):
           | var_const MUL var_const
     """
     p[0] = Node("binop", [p[1], p[3]], p[2])
+    # p[0] = Node("assignment", [p[1]])
+    # p[0] = Node("logical", [p[1]])
 
 def p_empty(p):
     """
