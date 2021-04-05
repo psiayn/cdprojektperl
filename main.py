@@ -17,9 +17,6 @@ stack.push(global_symbol_table)
 lineno, items = 1, list()
 
 for tok in lexer:
-#    print(tok)
-#    print(lineno)
-#    print(tok.lineno)
     if (tok.lineno == lineno):
         items.append(tok.value)
     else:
@@ -27,8 +24,6 @@ for tok in lexer:
         lineno += 1
 
     sym_table = stack.peek()
-#    print(sym_table)
-#    print(items)
     if(tok.type == 'VARNAME' or tok.type == 'ARRNAME'):
         scope = sym_table.get_name()
         name = ''
@@ -39,7 +34,6 @@ for tok in lexer:
         if ('my' in items or 'MY' in items):
             try:
                 old = sym_table.lookup(name)
-#                print("old go brr", old)
                 sym_table.insert(name, {'token' : tok.value,'line': tok.lineno, 'type' : tok.type, 'scope': scope})
             except:
                 sym_table.insert(name, {'token' : tok.value,'line': tok.lineno, 'type' : tok.type, 'scope': scope})
@@ -56,7 +50,6 @@ for tok in lexer:
             scope_name = 'foreach'
         level = find_most_recent_scope(scope_name)
         scope_name = ''.join([scope_name,"_", str(level+1)])
-#        print(scope_name)
         new_sym_table = symbol_table(scope_name, sym_table)
         stack.push(new_sym_table)
     elif(tok.type == 'BLOCKCL'):

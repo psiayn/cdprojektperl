@@ -1,5 +1,6 @@
 from ply import yacc
 from lexer_lex import tokens
+from constructs.ast import Node
 import sys
 
 def cprint(ptype: str, start: int, end: int ):
@@ -85,11 +86,10 @@ def p_var_op(p):
 
 def p_until(p):
     """
-    until : UNTIL OP expr CL BLOCKOP block BLOCKCL 
+    until : UNTIL OP logical_expr CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
     
-
 def p_foreach(p):
     """
     foreach : FOREACH OP ARRNAME CL BLOCKOP block BLOCKCL
@@ -127,9 +127,9 @@ def p_handle_types(p):
     """
     pass
 
-def p_expr(p):
+def p_logical_expr(p):
     """
-    expr : VARNAME GT NUMBER
+    logical_expr : VARNAME GT NUMBER
          | VARNAME LT NUMBER
          | VARNAME EQ EQ NUMBER
          | VARNAME GT EQ NUMBER
@@ -172,7 +172,24 @@ def p_expr(p):
     else:
         print("expr")
 
-    
+def p_var_const(p):
+    """
+    var_const: VARNAME
+         | VARNAME INDEXOP NUMBER INDEXCL
+         | NUMBER
+         | STRING
+    """
+    pass
+        
+def p_expr_bin_op(p):
+    """
+    expr: var_const PLUS var_const
+          | var_const MIN var_const
+          | var_const DIV var_const
+          | var_const MUL var_const
+    """
+    p[0] = Node("binop", [p[1], p[3]], p[2])
+
 def p_empty(p):
     """
     empty :

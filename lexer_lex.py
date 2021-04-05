@@ -31,7 +31,7 @@ tokens = (
     "EQ",
     "INCREMENT",
     "DECREMENT",
-    "PLS",
+    "PLUS",
     "MIN",
     "MUL",
     "DIV",
@@ -44,7 +44,7 @@ tokens = (
 # )
 
 # specifying regex for simple tokens
-t_PLS = r'\+'
+t_PLUS = r'\+'
 t_MIN = r'\-'
 t_MUL = r'\*'
 t_DIV = r'/'
@@ -76,7 +76,8 @@ t_ignore = '\t '
 
 def t_error(t):
     print("Illegal character '%s'"%t.value[0])
-    t.lexer.skip(2)
+    while t.value != '\n':
+        t.lexer.skip(1)
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
