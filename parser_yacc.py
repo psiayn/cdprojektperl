@@ -56,26 +56,24 @@ def p_arr_decl(p):
     else:
         print("array declaration", p.lineno(1), len(p) )
 
+def p_identifier_types(p):
+    """
+    identifier_types : VARNAME INDEXOP NUMBER INDEXCL
+                    | VARNAME INDEXOP VARNAME INDEXCL
+                    | VARNAME
+                    | FLOAT
+                    | NUMBER
+                    | STRING
+    """
+    pass
+
 def p_var_op(p):
     """
-    var_op : VARNAME INDEXOP NUMBER INDEXCL EQ STRING SEMI
-           | VARNAME INDEXOP NUMBER INDEXCL EQ NUMBER SEMI
-           | VARNAME INDEXOP VARNAME INDEXCL EQ STRING SEMI
-           | VARNAME INDEXOP VARNAME INDEXCL EQ NUMBER SEMI
-           | VARNAME EQ STRING SEMI
-           | VARNAME EQ NUMBER SEMI
-           | VARNAME INDEXOP NUMBER INDEXCL INCREMENT SEMI
-           | VARNAME INDEXOP VARNAME INDEXCL INCREMENT SEMI
-           | VARNAME INCREMENT SEMI
-           | VARNAME INDEXOP NUMBER INDEXCL DECREMENT SEMI
-           | VARNAME INDEXOP VARNAME INDEXCL DECREMENT SEMI
-           | VARNAME DECREMENT SEMI
-           | INCREMENT VARNAME INDEXOP NUMBER INDEXCL SEMI
-           | INCREMENT VARNAME INDEXOP VARNAME INDEXCL SEMI
-           | DECREMENT VARNAME INDEXOP NUMBER INDEXCL SEMI
-           | DECREMENT VARNAME INDEXOP VARNAME INDEXCL SEMI
-           | INCREMENT VARNAME SEMI
-           | DECREMENT VARNAME SEMI
+    var_op : identifier_types EQ identifier_types SEMI
+           | identifier_types INCREMENT SEMI
+           | identifier_types DECREMENT SEMI
+           | INCREMENT identifier_types
+           | DECREMENT identifier_types
     """
     if('=' in p):
         cprint("Variable reassignment", p.lineno(1), p.lineno(4))
@@ -112,56 +110,18 @@ def p_print(p):
 
 def p_handle_types(p):
     """
-    handle_types : VARNAME INDEXOP NUMBER INDEXCL COMMA handle_types
-             | VARNAME INDEXOP VARNAME INDEXCL COMMA handle_types
-             | STRING COMMA handle_types
-             | VARNAME COMMA handle_types
-             | NUMBER COMMA handle_types
-             | FLOAT COMMA handle_types
-             | VARNAME INDEXOP NUMBER INDEXCL
-             | VARNAME INDEXOP VARNAME INDEXCL
-             | VARNAME 
-             | NUMBER 
-             | FLOAT 
-             | STRING  
+    handle_types : identifier_types COMMA handle_types
+                 | identifier_types  
     """
     pass
 
 def p_logical_expr(p):
     """
-    logical_expr : VARNAME GT NUMBER
-         | VARNAME LT NUMBER
-         | VARNAME EQ EQ NUMBER
-         | VARNAME GT EQ NUMBER
-         | VARNAME LT EQ NUMBER
-         | VARNAME EQ EQ VARNAME
-         | VARNAME EQ EQ STRING
-         | VARNAME GT EQ VARNAME
-         | VARNAME LT EQ VARNAME
-         | VARNAME GT VARNAME
-         | VARNAME LT VARNAME
-         | VARNAME
-         | NUMBER GT NUMBER
-         | NUMBER LT NUMBER
-         | NUMBER EQ EQ NUMBER
-         | NUMBER GT EQ NUMBER
-         | NUMBER LT EQ NUMBER
-         | STRING EQ EQ NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL GT NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL LT NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL EQ EQ NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL GT EQ NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL LT EQ NUMBER
-         | VARNAME INDEXOP NUMBER INDEXCL GT VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL LT VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL EQ EQ VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL GT EQ VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL LT EQ VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL LT VARNAME INDEXOP NUMBER INDEXCL
-         | VARNAME INDEXOP NUMBER INDEXCL GT VARNAME INDEXOP NUMBER INDEXCL
-         | VARNAME INDEXOP NUMBER INDEXCL EQ EQ VARNAME INDEXOP NUMBER INDEXCL
-         | VARNAME INDEXOP NUMBER INDEXCL LT EQ VARNAME INDEXOP NUMBER INDEXCL
-         | VARNAME INDEXOP NUMBER INDEXCL GT EQ VARNAME INDEXOP NUMBER INDEXCL
+    logical_expr : identifier_types GT identifier_types
+                 | identifier_types LT identifier_types
+                 | identifier_types EQ EQ identifier_types
+                 | identifier_types GT EQ identifier_types
+                 | identifier_types LT EQ identifier_types
     """
     if (len(p) == 2):
         cprint("expr", p.lineno(1), p.lineno(1))
@@ -171,22 +131,13 @@ def p_logical_expr(p):
         cprint("expr", p.lineno(1), p.lineno(4))
     else:
         print("expr")
-
-def p_var_const(p):
-    """
-    var_const: VARNAME
-         | VARNAME INDEXOP NUMBER INDEXCL
-         | NUMBER
-         | STRING
-    """
-    pass
         
 def p_expr_bin_op(p):
     """
-    expr: var_const PLUS var_const
-          | var_const MIN var_const
-          | var_const DIV var_const
-          | var_const MUL var_const
+    expr : identifier_types PLUS identifier_types
+          | identifier_types MIN identifier_types
+          | identifier_types DIV identifier_types
+          | identifier_types MUL identifier_types
     """
     p[0] = Node("binop", [p[1], p[3]], p[2])
     # p[0] = Node("assignment", [p[1]])
