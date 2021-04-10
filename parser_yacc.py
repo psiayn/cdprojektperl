@@ -1,6 +1,6 @@
 from ply import yacc
 from lexer_lex import tokens
-from constructs.ast import BinOP, Literal
+from constructs.ast import BinOP, Literal, Array
 import sys
 
 def cprint(ptype: str, start: int, end: int ):
@@ -74,6 +74,7 @@ def p_identifier_types(p):
             p[0] = Literal("string", p[1])
     else:
         cprint("Identifier", p.lineno(1), p.lineno(1))
+        p[0] = Array(p[1], p[3])
 
 def p_var_op(p):
     """

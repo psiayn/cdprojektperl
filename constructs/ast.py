@@ -4,7 +4,6 @@ class Node:
         self.children = [ c for c in kwargs['children'] if c is not None ]
         self.data = kwargs.get('data', None)
 
-
 class BinOP(Node):
     def __init__(self, operator, left=None, right=None, type=None):
         super().__init__("Binary", children=[left, right], data=type)
@@ -29,3 +28,14 @@ class Literal(Node):
         super().__init__("Literal", children=[type], data=value)
         self.type = type
         self.value = value
+
+    def __repr__(self):
+        return f'<{self.value}: {self.type}>'
+
+class Array(Node):
+    def __init__(self, name, index):
+        super().__init__("Array", children=[], data=[name, index])
+        self.name = name
+        self.value = index
+    def __repr__(self):
+        return f'<{self.name}[{self.value}]>'
