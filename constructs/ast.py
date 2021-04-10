@@ -31,7 +31,7 @@ class Literal(Node):
         self.value = value
 
 class Decleration(Node):
-    def __init__(self, type=None, value):
-        super().__init__("Decleration", children=None, data=value)
+    def __init__(self, value, type=None):
+        super().__init__("Decleration", children=[None], data=value)
         self.type = type
         self.value = value
