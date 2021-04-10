@@ -1,2 +1,2 @@
-python parser.py test.pl
-python parser.py basics.pl
+python3 parser_yacc.py test.pl
+python3 parser_yacc.py basics.pl

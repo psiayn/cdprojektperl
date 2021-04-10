@@ -4,3 +4,5 @@ __pycache__
 parser.out
 parsetab.py
 .vscode
+constructs/__pycache__
+out.json

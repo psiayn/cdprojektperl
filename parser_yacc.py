@@ -1,6 +1,6 @@
 from ply import yacc
 from lexer_lex import tokens
-from constructs.ast import Node
+from constructs.ast import BinOP, Literal
 import sys
 
 def cprint(ptype: str, start: int, end: int ):
@@ -61,15 +61,24 @@ def p_identifier_types(p):
     identifier_types : VARNAME INDEXOP NUMBER INDEXCL
                     | VARNAME INDEXOP VARNAME INDEXCL
                     | VARNAME
-                    | FLOAT
                     | NUMBER
                     | STRING
     """
-    pass
+    if (len(p) == 2):
+        cprint("Identifier", p.lineno(1), p.lineno(1))
+        if ('$' in p):
+            p[0] = Literal("variable", p[1])
+        elif(r'[0-9]' in p):
+            p[0] = Literal("number", p[1])
+        else:
+            p[0] = Literal("string", p[1])
+    else:
+        cprint("Identifier", p.lineno(1), p.lineno(1))
 
 def p_var_op(p):
     """
     var_op : identifier_types EQ identifier_types SEMI
+           | identifier_types EQ expr SEMI
            | identifier_types INCREMENT SEMI
            | identifier_types DECREMENT SEMI
            | INCREMENT identifier_types
@@ -131,15 +140,35 @@ def p_logical_expr(p):
         cprint("expr", p.lineno(1), p.lineno(4))
     else:
         print("expr")
-        
+
+
+def p_expr(p):
+    """
+    expr : expr_bin PLS identifier_types
+         | expr_bin MIN identifier_types
+         | expr_bin DIV identifier_types
+         | expr_bin MUL identifier_types
+         | expr_bin PLS expr_bin
+         | expr_bin MIN expr_bin
+         | expr_bin DIV expr_bin
+         | expr_bin MUL expr_bin
+         | expr_bin
+         | empty
+    """
+    if (len(p) == 2):
+        p[0] = p[1]
+    elif (len(p) == 4):
+        p[0] = BinOP(p[2], left = p[1], right = p[3])
+
 def p_expr_bin_op(p):
     """
-    expr : identifier_types PLUS identifier_types
+    expr_bin : identifier_types PLS identifier_types
           | identifier_types MIN identifier_types
           | identifier_types DIV identifier_types
           | identifier_types MUL identifier_types
     """
-    p[0] = Node("binop", [p[1], p[3]], p[2])
+    cprint("binary operation", p.lineno(1), p.lineno(1))
+    p[0] = BinOP(p[2], left = p[1], right=p[3])
     # p[0] = Node("assignment", [p[1]])
     # p[0] = Node("logical", [p[1]])
 

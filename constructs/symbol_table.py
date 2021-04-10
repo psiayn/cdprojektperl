@@ -54,6 +54,7 @@ class symbol_table:
 
     def print_table(self):
         print ("Table :  ", self.name)
+        print(self.symbols)
         for i in self.symbols:
             print(i , self.symbols[i])
         print()	

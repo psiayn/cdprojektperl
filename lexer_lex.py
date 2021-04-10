@@ -13,7 +13,6 @@ reserved = {
 # list of token names
 tokens = (
     "NUMBER",
-    "FLOAT",
     "STRING",
     "SEMI",
     "ID",
@@ -31,7 +30,7 @@ tokens = (
     "EQ",
     "INCREMENT",
     "DECREMENT",
-    "PLUS",
+    "PLS",
     "MIN",
     "MUL",
     "DIV",
@@ -44,7 +43,7 @@ tokens = (
 # )
 
 # specifying regex for simple tokens
-t_PLUS = r'\+'
+# t_PLUS = r'\+'
 t_MIN = r'\-'
 t_MUL = r'\*'
 t_DIV = r'/'
@@ -76,8 +75,7 @@ t_ignore = '\t '
 
 def t_error(t):
     print("Illegal character '%s'"%t.value[0])
-    while t.value != '\n':
-        t.lexer.skip(1)
+    t.lexer.skip(1)
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
@@ -86,6 +84,10 @@ def t_ID(t):
 
 def t_VARNAME(t):
     r'\$[a-zA-Z_][a-zA-Z_0-9]*'
+    return t
+
+def t_PLS(t):
+    r'\+'
     return t
 
 def t_ARRNAME(t):

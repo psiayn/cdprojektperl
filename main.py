@@ -59,4 +59,5 @@ for tok in lexer:
 
 final_table = stack.peek()
 parser = yacc.yacc(module=parser_yacc)
+parser.parse(data)
 final_table.print_table()
