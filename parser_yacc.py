@@ -1,6 +1,6 @@
 from ply import yacc
 from lexer_lex import tokens
-from constructs.ast import BinOP, Literal, Array
+from constructs.ast import *
 import sys
 
 def cprint(ptype: str, start: int, end: int ):
@@ -38,8 +38,10 @@ def p_var_decl(p: yacc.YaccProduction):
              | MY VARNAME EQ NUMBER SEMI
     """
     if (len(p) == 4):
+        p[0] = Decleration(p[2])
         cprint("variable declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 6):
+        p[0] = Decleration(p[2], p[4])
         cprint("variable declaration", p.lineno(1), p.lineno(5))
     else:
         print("variable declaration", p.lineno(1))

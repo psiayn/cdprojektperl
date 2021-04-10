@@ -39,3 +39,8 @@ class Array(Node):
         self.value = index
     def __repr__(self):
         return f'<{self.name}[{self.value}]>'
+class Decleration(Node):
+    def __init__(self, value, type=None):
+        super().__init__("Decleration", children=[None], data=value)
+        self.type = type
+        self.value = value
