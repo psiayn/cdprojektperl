@@ -36,6 +36,7 @@ def p_var_decl(p: yacc.YaccProduction):
     var_decl : MY VARNAME SEMI
              | MY VARNAME EQ STRING SEMI
              | MY VARNAME EQ NUMBER SEMI
+             | MY VARNAME EQ EXPR SEMI
     """
     if (len(p) == 4):
         cprint("variable declaration", p.lineno(1), p.lineno(3))
@@ -93,7 +94,7 @@ def p_var_op(p):
 
 def p_until(p):
     """
-    until : UNTIL OP logical_expr CL BLOCKOP block BLOCKCL 
+    until : UNTIL OP relational_expression CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
     
@@ -124,9 +125,9 @@ def p_handle_types(p):
     """
     pass
 
-def p_logical_expr(p):
+def p relational_expr(p):
     """
-    logical_expr : identifier_types GT identifier_types
+ relational_expr : identifier_types GT identifier_types
                  | identifier_types LT identifier_types
                  | identifier_types EQ EQ identifier_types
                  | identifier_types GT EQ identifier_types
@@ -141,6 +142,24 @@ def p_logical_expr(p):
     else:
         print("expr")
 
+def p_logical_expr(p):
+    """
+    logical_expr : logical_bin_expr AND identifier_types
+                 | logical_bin_expr AND logical_bin_expr
+                 | logical_bin_expr OR identifier_types
+                 | logical_bin_expr OR logical_bin_expr
+                 | logical_bin_expr NOT logical_bin_expr
+                 | logical_bin_expr NOT identifier_types
+                 | empty
+    """
+    pass
+
+def p_logical_bin_expr(p):
+    """
+    logical_bin_expr : identifier_types AND identifier_types
+                     | identifier_types OR identifier_types
+                     | identifier_types NOT identifier_types
+    """
 
 def p_expr(p):
     """
@@ -170,7 +189,7 @@ def p_expr_bin_op(p):
     cprint("binary operation", p.lineno(1), p.lineno(1))
     p[0] = BinOP(p[2], left = p[1], right=p[3])
     # p[0] = Node("assignment", [p[1]])
-    # p[0] = Node("logical", [p[1]])
+    # p[0] = Node( relational", [p[1]])
 
 def p_empty(p):
     """
@@ -188,3 +207,4 @@ if __name__ == "__main__":
         result = parser.parse(f.read())
         print(result)
         
+def 

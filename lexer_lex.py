@@ -35,6 +35,9 @@ tokens = (
     "MUL",
     "DIV",
     "COMMENT",
+    "AND",
+    "OR",
+    "NOT"
 ) + tuple(reserved.values())
 
 # list of possible states
@@ -59,6 +62,7 @@ t_BLOCKOP = r'\{'
 t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
 t_STRING = r'\".*\"'
+t_NOT = r'NOT'
 # regex rules + other actions
 
 def t_NUMBER(t):
@@ -105,6 +109,14 @@ def t_DECREMENT(t):
 def t_COMMENT(t):
     r'\#.*'
     pass
+
+def t_AND(t):
+    r'(\and|&&)'
+    return t
+
+def t_OR(t):
+    r'(/or|\|\|)'
+    return t
 
 if __name__ == "__main__":
     lexer = lex.lex()
