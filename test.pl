@@ -17,11 +17,11 @@ my @a = (12);
 my @ol = (1, 2, 3);
 my @yabe = (1, "string", 2, 3, "bara", "asdf");
 print $a[0];
-until ( $test == $bruh ){
+until ( $test and $bruh ){
     print "hi";
     use bruh;
     my @send_help;
-    until ( $test == "yamero" ) {
+    until ( $test not "yamero" ) {
 	use kekew;
     }
 }

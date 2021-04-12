@@ -3,6 +3,9 @@ import ply.lex as lex
 # list of reserved tokens
 reserved = {
     'if': 'IF',
+    'and': 'AND',
+    'not': 'NOT',
+    'or': 'OR',
     'use': 'USE',
     'print': 'PRINT',
     'my' : 'MY',

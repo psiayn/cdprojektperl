@@ -97,6 +97,7 @@ def p_var_op(p):
 def p_until(p):
     """
     until : UNTIL OP logical_expr CL BLOCKOP block BLOCKCL 
+          | UNTIL OP relational_expr CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
     
@@ -127,23 +128,30 @@ def p_handle_types(p):
     """
     pass
 
-def p_logical_expr(p):
+def p_relational_expr(p):
     """
-    logical_expr : identifier_types GT identifier_types
+    relational_expr : identifier_types GT identifier_types
                  | identifier_types LT identifier_types
                  | identifier_types EQ EQ identifier_types
                  | identifier_types GT EQ identifier_types
                  | identifier_types LT EQ identifier_types
     """
     if (len(p) == 2):
-        cprint("expr", p.lineno(1), p.lineno(1))
+        cprint("relational expr", p.lineno(1), p.lineno(1))
     elif(len(p) == 4):
-        cprint("expr", p.lineno(1), p.lineno(3))
+        cprint("relational expr", p.lineno(1), p.lineno(3))
     elif (len(p) == 5):
-        cprint("expr", p.lineno(1), p.lineno(4))
+        cprint("relational expr", p.lineno(1), p.lineno(4))
     else:
-        print("expr")
+        print("relational expr")
 
+def p_logical_expr(p):
+    """
+    logical_expr : identifier_types AND identifier_types
+                 | identifier_types NOT identifier_types
+                 | identifier_types OR identifier_types
+    """
+    cprint("logical expr", p.lineno(2), p.lineno(2))
 
 def p_expr(p):
     """
