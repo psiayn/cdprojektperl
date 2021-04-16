@@ -96,7 +96,7 @@ def p_var_op(p):
 
 def p_until(p):
     """
-    until : UNTIL OP logical_expr CL BLOCKOP block BLOCKCL 
+    until : UNTIL OP logical_expr_main CL BLOCKOP block BLOCKCL 
           | UNTIL OP relational_expr CL BLOCKOP block BLOCKCL 
     """
     cprint("until block", p.lineno(1), p.lineno(7))
@@ -139,19 +139,47 @@ def p_relational_expr(p):
     if (len(p) == 2):
         cprint("relational expr", p.lineno(1), p.lineno(1))
     elif(len(p) == 4):
+        p[0] = RelationalExpr(p[2], left = p[1], right = p[3], type=bool)
         cprint("relational expr", p.lineno(1), p.lineno(3))
     elif (len(p) == 5):
+        temp_op = str(p[2]+p[3])
+        p[0] = RelationalExpr(temp_op, left = p[1], right = p[4], type=bool)
         cprint("relational expr", p.lineno(1), p.lineno(4))
     else:
         print("relational expr")
 
 def p_logical_expr(p):
     """
-    logical_expr : identifier_types AND identifier_types
-                 | identifier_types NOT identifier_types
-                 | identifier_types OR identifier_types
+    logical_expr : logical_expr_bin AND identifier_types
+                 | logical_expr_bin OR identifier_types
+                 | logical_expr_bin AND relational_expr
+                 | logical_expr_bin OR relational_expr
+                 | logical_expr_bin AND logical_expr_bin
+                 | logical_expr_bin OR logical_expr_bin
+                 | logical_expr_bin
+                 | empty
     """
-    cprint("logical expr", p.lineno(2), p.lineno(2))
+    #cprint("logical expr", p.lineno(2), p.lineno(2))        
+    pass
+
+def p_logical_expr_bin(p):
+    """
+    logical_expr_bin : identifier_types AND identifier_types
+                     | identifier_types OR identifier_types
+                     | relational_expr AND relational_expr
+                     | relational_expr OR relational_expr
+    """
+    if (len(p) == 2):
+        p[0] = p[1]
+    elif (len(p) == 4):
+        p[0] = LogicalExprBin(p[2], left = p[1], right = p[3], type=bool)
+
+def p_logical_expr_main(p):
+    """
+    logical_expr_main : NOT logical_expr
+                     | logical_expr
+    """
+    pass
 
 def p_expr(p):
     """

@@ -20,12 +20,14 @@ print $a[0];
 until ( $test and $bruh ){
     print "hi";
     use bruh;
+    until ($kill <= $help){
     my @send_help;
-    until ( $test not "yamero" ) {
+    }
+    until ( not $test or "yamero" ) {
 	use kekew;
     }
 }
 
-foreach (@animals) {
+foreach ( @animals ) {
     print "$_\t";
 }
