@@ -46,7 +46,7 @@ class Decleration(Node):
         self.type = type
         self.value = value
     
-    def __repr__(self, value, type=None):
+    def __repr__(self):
         return f'<{self.value}: {self.type}>'
 
 class LogicalExprBin(Node):

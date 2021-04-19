@@ -3,6 +3,8 @@ from lexer_lex import tokens
 from constructs.ast import *
 import sys
 
+start_ast = Node("start", children=[])
+
 def cprint(ptype: str, start: int, end: int ):
     print("<",ptype,", ", start, ", ", end,">", sep="")
 
@@ -11,7 +13,8 @@ def p_start(p):
     start : start command
           | empty
     """
-    pass
+    if (len(p) != 2):
+        start_ast.children.append(p[2])
 
 def p_command(p):
     """
@@ -23,7 +26,7 @@ def p_command(p):
             | until
             | foreach
     """
-    pass
+    p[0] = p[1]
 
 def p_use(p):
     """

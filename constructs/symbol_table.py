@@ -1,4 +1,5 @@
 import re
+from pprint import pprint
 scopes = {'until': 0, 'foreach': 0} 
 
 class table_stack:
@@ -54,10 +55,10 @@ class symbol_table:
 
     def print_table(self):
         print ("Table :  ", self.name)
-        print(self.symbols)
+        pprint(self.symbols)
         for i in self.symbols:
-            print(i , self.symbols[i])
-        print()	
+            pprint(f"{i} : {self.symbols[i]}")
+        pprint('')
         for i in self.children:
             self.children[i].print_table()	
 

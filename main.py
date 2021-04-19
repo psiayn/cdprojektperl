@@ -3,6 +3,7 @@ import sys
 import os
 import lexer_lex
 import parser_yacc
+from parser_yacc import start_ast as start
 from constructs.symbol_table import symbol_table, table_stack, find_most_recent_scope
 
 lexer = lex.lex(module=lexer_lex)
@@ -16,6 +17,7 @@ stack = table_stack()
 stack.push(global_symbol_table)
 lineno, items = 1, list()
 
+tables = list()
 for tok in lexer:
     if (tok.lineno == lineno):
         items.append(tok.value)
@@ -54,10 +56,17 @@ for tok in lexer:
         stack.push(new_sym_table)
     elif(tok.type == 'BLOCKCL'):
         child_sym_table = stack.pop()
+        tables.append(child_sym_table)
         sym_table = stack.peek()
         sym_table.put_child(child_sym_table.name, child_sym_table)
 
 final_table = stack.peek()
-parser = yacc.yacc(module=parser_yacc)
+parser = yacc.yacc(module=parser_yacc, debug=True)
 parser.parse(data)
 final_table.print_table()
+tables.append(global_symbol_table)
+
+print(start.children)
+print()
+print()
+print(start.data)
