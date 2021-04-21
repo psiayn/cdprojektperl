@@ -4,6 +4,10 @@ class Node:
         self.children = [ c for c in kwargs['children'] if c is not None ]
         self.data = kwargs.get('data', None)
 
+    def add_child(self, child):
+        if child is not None:
+            self.children.append(child)
+
 class BinOP(Node):
     def __init__(self, operator, left=None, right=None, type=None):
         super().__init__("Binary", children=[left, right], data=type)
@@ -33,12 +37,42 @@ class Literal(Node):
         return f'<{self.value}: {self.type}>'
 
 class Array(Node):
-    def __init__(self, name, index):
-        super().__init__("Array", children=[], data=[name, index])
+    def __init__(self, name, index=None, data=None):
+        super().__init__("Array", children=[], data=[name, index, data])
         self.name = name
-        self.value = index
+        self.index = index
+        self.data = data
     def __repr__(self):
-        return f'<{self.name}[{self.value}]>'
+        return f'<{self.name}[{self.data}, {self.index}]>'
+
+class Use(Node):
+    def __init__(self, package):
+        super().__init__("Use Statement", children=[], data=package)
+
+class List(Node):
+    """Node to store literals"""
+
+    def __init__(self, children):
+        super().__init__("LIST", children=children)
+        self.append = self.add_child
+
+    def __iter__(self):
+        return iter(self.children)
+
+    def __len__(self):
+        return len(self.children)
+
+class Print(Node):
+    def __init__(self, string):
+        super().__init__("Print", children=[], data=string)
+
+class Until(Node):
+    def __init__(self, condition, block):
+        super().__init__("Until", children=block, data=condition)
+
+class Foreach(Node):
+    def __init__(self, iterator, block):
+        super().__init__("Foreach", children=block, data=iterator)
 
 class Decleration(Node):
     def __init__(self, value, type=None):

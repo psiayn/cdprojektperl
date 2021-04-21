@@ -32,6 +32,7 @@ def p_use(p):
     """
     use : USE ID SEMI
     """
+    p[0] = Use(p[2])
     cprint("use statement", p.lineno(1), p.lineno(3))
 
 def p_var_decl(p: yacc.YaccProduction):
@@ -55,11 +56,11 @@ def p_arr_decl(p):
              | MY ARRNAME EQ OP handle_types CL SEMI
     """
     if (len(p) == 4):
+        p[0] = Array(p[2])
         cprint("array declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 8):
+        p[0] = Array(p[2], data=p[5])
         cprint("array declaration", p.lineno(1), p.lineno(7))
-    else:
-        print("array declaration", p.lineno(1), len(p) )
 
 def p_identifier_types(p):
     """
@@ -78,8 +79,8 @@ def p_identifier_types(p):
         else:
             p[0] = Literal("string", p[1])
     else:
-        cprint("Identifier", p.lineno(1), p.lineno(1))
-        p[0] = Array(p[1], p[3])
+        Array(p[1], index=p[3])
+        cprint("Array", p.lineno(1), p.lineno(1))
 
 def p_var_op(p):
     """
@@ -91,17 +92,29 @@ def p_var_op(p):
            | DECREMENT identifier_types
     """
     if('=' in p):
+        p[0] = BinOP('=', p[1], p[3], "assignment")
         cprint("Variable reassignment", p.lineno(1), p.lineno(4))
     elif('++' in p):
         cprint("Variable increment", p.lineno(1), p.lineno(3))
+        if ( '+' in p[1] ):
+            p[0] = BinOP('++', right=p[2], type="preincr")
+        else:
+            p[0] = BinOP('++', left=p[2], type="postincr")
+
     elif('--' in p):
         cprint("Variable decrement", p.lineno(1), p.lineno(3))
+        if ( '-' in p[1] ):
+            p[0] = BinOP('--', right=p[2], type="predecr")
+        else:
+            p[0] = BinOP('--', left=p[2], type="postdecr")
+
 
 def p_until(p):
     """
     until : UNTIL OP logical_expr_main CL BLOCKOP block BLOCKCL 
           | UNTIL OP relational_expr CL BLOCKOP block BLOCKCL 
     """
+    p[0] = Until(p[3], p[6])
     cprint("until block", p.lineno(1), p.lineno(7))
     
 def p_foreach(p):
@@ -109,6 +122,7 @@ def p_foreach(p):
     foreach : FOREACH OP ARRNAME CL BLOCKOP block BLOCKCL
             | FOREACH OP handle_types CL BLOCKOP block BLOCKCL
     """
+    Foreach(p[3], p[6])
     cprint("foreach block", p.lineno(1), p.lineno(7))
 
 def p_block(p):
@@ -116,12 +130,17 @@ def p_block(p):
     block : block command
           | empty
     """
-    pass
+    if (len(p) == 2):
+        p[0] = List([])
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
 
 def p_print(p):
     """
     print : PRINT handle_types SEMI
     """
+    p[0] = Print(p[2])
     cprint("print statement", p.lineno(1), p.lineno(3))
 
 def p_handle_types(p):
@@ -129,7 +148,11 @@ def p_handle_types(p):
     handle_types : identifier_types COMMA handle_types
                  | identifier_types  
     """
-    pass
+    if (len(p) == 2):
+        p[0] = List([p[1]])
+    else:
+        p[3].append(p[1])
+        p[0] = p[3]
 
 def p_relational_expr(p):
     """
