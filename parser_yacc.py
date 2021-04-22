@@ -3,6 +3,8 @@ import lexer_lex
 from lexer_lex import tokens
 from constructs.ast import *
 from constructs.symbol_table import SymbolTable
+from constructs.ast_vis import draw_AST
+import icg
 import sys
 
 symtab = SymbolTable()
@@ -16,7 +18,6 @@ def p_start(p):
     start : start command
           | empty
     """
-    # print(p.lineno(2))
     if (len(p) != 2):
         start_ast.children.append(p[2])
 
@@ -52,7 +53,7 @@ def p_var_decl(p: yacc.YaccProduction):
     elif (len(p) == 6):
         symtab.add_if_not_exists(p[2][0])
         symtab.get_symbol(p[2][0]).value = p[4][0]
-        p[0] = Decleration(p[2][0], p[4])
+        p[0] = Decleration(p[2][0], p[4][0])
         cprint("variable declaration", p.lineno(1), p.lineno(5))
     symtab.get_symbol(p[2][0]).lineno = p.lineno(2)
 
@@ -111,21 +112,21 @@ def p_var_op(p):
            | DECREMENT identifier_types
     """
     if('=' in p):
-        p[0] = BinOP('=', p[1], p[3], "assignment")
+        p[0] = BinOP('=', p[1], p[3])
         cprint("Variable reassignment", p.lineno(1), p.lineno(4))
     elif('++' in p):
         cprint("Variable increment", p.lineno(1), p.lineno(3))
         if ( '+' in p[1] ):
-            p[0] = BinOP('++', right=p[2], type="preincr")
+            p[0] = BinOP('++', right=p[2])
         else:
-            p[0] = BinOP('++', left=p[2], type="postincr")
+            p[0] = BinOP('++', left=p[2])
 
     elif('--' in p):
         cprint("Variable decrement", p.lineno(1), p.lineno(3))
         if ( '-' in p[1] ):
-            p[0] = BinOP('--', right=p[2], type="predecr")
+            p[0] = BinOP('--', right=p[2])
         else:
-            p[0] = BinOP('--', left=p[2], type="postdecr")
+            p[0] = BinOP('--', left=p[2])
 
 def p_until(p):
     """
@@ -147,13 +148,11 @@ def p_foreach(p):
     p[0] = Foreach(p[3], p[6])
     cprint("foreach block", p.lineno(1), p.lineno(7))
 
-
 def p_block_op(p):
     """
     block_op : BLOCKOP
     """
     symtab.enter_scope()
-
 
 def p_block_cl(p):
     """
@@ -270,8 +269,6 @@ def p_expr_bin_op(p):
     """
     cprint("binary operation", p.lineno(1), p.lineno(1))
     p[0] = BinOP(p[2], left = p[1], right=p[3])
-    # p[0] = Node("assignment", [p[1]])
-    # p[0] = Node("logical", [p[1]])
 
 def p_empty(p):
     """
@@ -296,3 +293,11 @@ if __name__ == "__main__":
     print()
     print("Printing SYMBOL_TABLE")
     print(symtab)
+    print()
+    print()
+    print()
+    print("Printing AST")
+    print(start_ast.children)
+    print(start_ast.data)
+    draw_AST(start_ast)
+    icg.intermediate_codegen(start_ast)

@@ -58,14 +58,11 @@ def _recur_codegen(node, ic):
 
     tac_fn_name = f"tac_{node_class_name}"
 
-    if tac_fn_name in globals():
-        globals()[tac_fn_name](ic, node, new_children, return_val)
-
-    # elif isinstance(node, syntree.Identifier):
-
-    #     return_val.append(node.ident_name)
-
-    # TODO: implement other AST nodes too
+    # if tac_fn_name in globals():
+    #     globals()[tac_fn_name](ic, node, new_children, return_val)
+    if isinstance(node, BinOP):
+        print(node)
+        print("calling necessary functions")
 
     else:
         print(f"Intermediate code is not yet implemented for node {node}")

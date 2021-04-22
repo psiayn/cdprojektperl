@@ -9,17 +9,16 @@ class Node:
             self.children.append(child)
 
 class BinOP(Node):
-    def __init__(self, operator, left=None, right=None, type=None):
-        super().__init__("Binary", children=[left, right], data=type)
+    def __init__(self, operator, left=None, right=None):
         self.operator = operator
         self.left = left
         self.right = right
-        x = self.left
-        y = self.right
+        children_ = []
         if isinstance(left, Node):
-            x = left.data
+            children_.append(left)
         if isinstance(right, Node):
-            y = right.data
+            children_.append(right)
+        super().__init__("Binary", children=children_, data=operator)
         print("self.left", self.left)
         print("self.right", self.right)
         print("self.operator", self.operator)
@@ -29,7 +28,7 @@ class BinOP(Node):
 
 class Literal(Node):
     def __init__(self, type, value):
-        super().__init__("Literal", children=[type], data=value)
+        super().__init__("Literal", children=[], data=[value])
         self.type = type
         self.value = value
 
@@ -38,7 +37,10 @@ class Literal(Node):
 
 class Array(Node):
     def __init__(self, name, index=None, data=None):
-        super().__init__("Array", children=[], data=[name, index, data])
+        if isinstance(data, Node):
+            super().__init__("Array", children=[data], data=[name, index])
+        else:
+            super().__init__("Array", children=[None], data=[name, index, data])
         self.name = name
         self.index = index
         self.data = data
@@ -53,7 +55,7 @@ class List(Node):
     """Node to store literals"""
 
     def __init__(self, children):
-        super().__init__("LIST", children=children)
+        super().__init__("LIST", children=children, data=[])
         self.append = self.add_child
 
     def __iter__(self):
@@ -64,7 +66,10 @@ class List(Node):
 
 class Print(Node):
     def __init__(self, string):
-        super().__init__("Print", children=[], data=string)
+        if isinstance(string, Node):
+            super().__init__("print", children=[string], data=[])
+        else:
+            super().__init__("print", children=[], data=string)
 
 class Until(Node):
     def __init__(self, condition, block):
@@ -76,25 +81,27 @@ class Foreach(Node):
 
 class Decleration(Node):
     def __init__(self, value, type=None):
-        super().__init__("Decleration", children=[None], data=value)
+        if isinstance(value, Node):
+            super().__init__("decleration", children=[value], data=[])
+        else:
+            super().__init__("decleration", children=[], data=value)
         self.type = type
         self.value = value
-    
+
     def __repr__(self):
         return f'<{self.value}: {self.type}>'
 
 class LogicalExprBin(Node):
     def __init__(self, operator, left=None, right=None, type=None):
-        super().__init__("LogicalBinary", children=[left,right], data=type)
         self.operator = operator
         self.left = left
         self.right = right
-        x = self.left
-        y = self.right
+        children_ = []
         if isinstance(left, Node):
-            x = left.data
+            children_.append(left)
         if isinstance(right, Node):
-            y = right.data
+            children_.append(right)
+        super().__init__("LogicalBinary", children=children_, data=type)
         print("self.left", self.left)
         print("self.right", self.right)
         print("self.operator", self.operator)
@@ -104,16 +111,15 @@ class LogicalExprBin(Node):
 
 class RelationalExpr(Node):
     def __init__(self, operator, left=None, right=None, type=None):
-        super().__init__("RelationalExpr", children=[left,right], data=type)
         self.operator = operator
         self.left = left
         self.right = right
-        x = self.left
-        y = self.right
+        children_ = []
         if isinstance(left, Node):
-            x = left.data
+            children_.append(left)
         if isinstance(right, Node):
-            y = right.data
+           children_.append(right)
+        super().__init__("RelationalExpr", children=children_, data=type)
         print("self.left", self.left)
         print("self.right", self.right)
         print("self.operator", self.operator)
