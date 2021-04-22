@@ -62,7 +62,7 @@ for tok in lexer:
 
 final_table = stack.peek()
 parser = yacc.yacc(module=parser_yacc, debug=True)
-parser.parse(data)
+parser.parse(data, tracking=True)
 final_table.print_table()
 tables.append(global_symbol_table)
 

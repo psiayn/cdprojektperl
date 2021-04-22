@@ -1,8 +1,11 @@
-from ply import yacc
+from ply import yacc, lex
+import lexer_lex
 from lexer_lex import tokens
 from constructs.ast import *
+from constructs.symbol_table import SymbolTable
 import sys
 
+symtab = SymbolTable()
 start_ast = Node("start", children=[])
 
 def cprint(ptype: str, start: int, end: int ):
@@ -13,16 +16,17 @@ def p_start(p):
     start : start command
           | empty
     """
+    # print(p.lineno(2))
     if (len(p) != 2):
         start_ast.children.append(p[2])
 
 def p_command(p):
     """
-    command : use 
-            | print 
-            | var_decl 
+    command : use
+            | print
+            | var_decl
             | arr_decl
-            | var_op 
+            | var_op
             | until
             | foreach
     """
@@ -42,13 +46,15 @@ def p_var_decl(p: yacc.YaccProduction):
              | MY VARNAME EQ NUMBER SEMI
     """
     if (len(p) == 4):
-        p[0] = Decleration(p[2])
+        symtab.add_if_not_exists(p[2][0])
+        p[0] = Decleration(p[2][0])
         cprint("variable declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 6):
-        p[0] = Decleration(p[2], p[4])
+        symtab.add_if_not_exists(p[2][0])
+        symtab.get_symbol(p[2][0]).value = p[4][0]
+        p[0] = Decleration(p[2][0], p[4])
         cprint("variable declaration", p.lineno(1), p.lineno(5))
-    else:
-        print("variable declaration", p.lineno(1))
+    symtab.get_symbol(p[2][0]).lineno = p.lineno(2)
 
 def p_arr_decl(p):
     """
@@ -56,11 +62,15 @@ def p_arr_decl(p):
              | MY ARRNAME EQ OP handle_types CL SEMI
     """
     if (len(p) == 4):
+        symtab.add_if_not_exists(p[2])
         p[0] = Array(p[2])
         cprint("array declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 8):
+        symtab.add_if_not_exists(p[2])
+        symtab.get_symbol(p[2]).value = p[5]
         p[0] = Array(p[2], data=p[5])
         cprint("array declaration", p.lineno(1), p.lineno(7))
+    symtab.get_symbol(p[2]).lineno = p.lineno(2)
 
 def p_identifier_types(p):
     """
@@ -70,16 +80,25 @@ def p_identifier_types(p):
                     | NUMBER
                     | STRING
     """
+    symbol = symtab.get_symbol(p[1][0])
     if (len(p) == 2):
         cprint("Identifier", p.lineno(1), p.lineno(1))
-        if ('$' in p):
-            p[0] = Literal("variable", p[1])
-        elif(r'[0-9]' in p):
-            p[0] = Literal("number", p[1])
+        if (p[1][1] == "VARNAME"):
+            if (symbol is None):
+                print("Variable accessed before declaration.")
+            else:
+                print(symbol)
+            p[0] = Literal("variable", p[1][0])
+        elif(p[1][1] == "NUMBER"):
+            p[0] = Literal("number", p[1][0])
         else:
-            p[0] = Literal("string", p[1])
+            p[0] = Literal("string", p[1][0])
     else:
-        Array(p[1], index=p[3])
+        if (symbol is None):
+            print("Array used before declaration.")
+        else:
+            print(symbol)
+        p[0] = Array(p[1][0], index=p[3][0])
         cprint("Array", p.lineno(1), p.lineno(1))
 
 def p_var_op(p):
@@ -108,22 +127,39 @@ def p_var_op(p):
         else:
             p[0] = BinOP('--', left=p[2], type="postdecr")
 
-
 def p_until(p):
     """
-    until : UNTIL OP logical_expr_main CL BLOCKOP block BLOCKCL 
-          | UNTIL OP relational_expr CL BLOCKOP block BLOCKCL 
+    until : UNTIL OP logical_expr_main CL block_op block block_cl
+          | UNTIL OP relational_expr CL block_op block block_cl
     """
     p[0] = Until(p[3], p[6])
     cprint("until block", p.lineno(1), p.lineno(7))
-    
+
 def p_foreach(p):
     """
-    foreach : FOREACH OP ARRNAME CL BLOCKOP block BLOCKCL
-            | FOREACH OP handle_types CL BLOCKOP block BLOCKCL
+    foreach : FOREACH OP ARRNAME CL block_op block block_cl
+           | FOREACH OP handle_types CL block_op block block_cl
     """
-    Foreach(p[3], p[6])
+    if ('@' in p[3]):
+        symb = symtab.get_symbol(p[3])
+        if (symb is None):
+            print("ERROR array accessed before declaration.")
+    p[0] = Foreach(p[3], p[6])
     cprint("foreach block", p.lineno(1), p.lineno(7))
+
+
+def p_block_op(p):
+    """
+    block_op : BLOCKOP
+    """
+    symtab.enter_scope()
+
+
+def p_block_cl(p):
+    """
+    block_cl : BLOCKCL
+    """
+    symtab.leave_scope()
 
 def p_block(p):
     """
@@ -146,7 +182,7 @@ def p_print(p):
 def p_handle_types(p):
     """
     handle_types : identifier_types COMMA handle_types
-                 | identifier_types  
+                 | identifier_types
     """
     if (len(p) == 2):
         p[0] = List([p[1]])
@@ -248,8 +284,15 @@ def p_error(p):
 
 
 if __name__ == "__main__":
+    lexer = lex.lex(module=lexer_lex)
     parser = yacc.yacc(debug=True)
     with open(sys.argv[1], "rt") as f:
-        result = parser.parse(f.read())
+        data = f.read()
+        lexer.input(data)
+        result = parser.parse(data)
         print(result)
-        
+    print()
+    print()
+    print()
+    print("Printing SYMBOL_TABLE")
+    print(symtab)

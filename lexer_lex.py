@@ -61,12 +61,17 @@ t_INDEXCL = r'\]'
 t_BLOCKOP = r'\{'
 t_BLOCKCL = r'\}'
 t_COMMA = r'\,'
-t_STRING = r'\".*\"'
+# t_STRING = r'\".*\"'
 # regex rules + other actions
 
+def t_STRING(t):
+    r'\".*\"'
+    val = t.value.strip("\"")
+    t.value = (val, "STRING")
+    return t
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
-    t.value = float(t.value)
+    t.value = (float(t.value), "NUMBER")
     return t
 
 def t_newline(t):
@@ -87,6 +92,7 @@ def t_ID(t):
 
 def t_VARNAME(t):
     r'\$[a-zA-Z_][a-zA-Z_0-9]*'
+    t.value = (t.value, "VARNAME")
     return t
 
 def t_PLS(t):
