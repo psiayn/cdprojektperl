@@ -6,18 +6,15 @@ class Quad:
     op1 = None
     op2 = None
     operator = None
-#  func_name = None
 
     def __init__(self, dest, op1, op2, operator):
         self.dest = dest
         self.op1 = op1
         self.op2 = op2
         self.operator = operator
-        #  self.func_name = str(func_name)
 
     def print_info(self):
         print("{} = {} {} {}".format(self.dest, self.op1, self.operator, self.op2))
-
 
 class IntermediateCode:
     def __init__(self):
@@ -37,7 +34,6 @@ class IntermediateCode:
 
     def add_to_list(self, code: Quad):
         self.code_list.append(code)
-        #  self.code_list[Quad.func_name].append(code)
 
     def print_three_address_code(self):
         for i in self.code_list:
@@ -77,8 +73,6 @@ class IntermediateCode:
                 print("{} = {} + 1".format(dest, op))
             else:
                 print("{} = {} {} {}".format(dest, op1, operator, op2))
-
-
 
 def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
     # process all child nodes before parent
@@ -220,7 +214,6 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         return_val = node
 
     return return_val
-
 
 def intermediate_codegen(ast, symtab):
     ic = IntermediateCode()
