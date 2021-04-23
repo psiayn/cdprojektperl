@@ -69,6 +69,7 @@ def p_arr_decl(p):
     elif (len(p) == 8):
         symtab.add_if_not_exists(p[2])
         symtab.get_symbol(p[2]).value = p[5]
+        print(p[0])
         p[0] = Array(p[2], data=p[5])
         cprint("array declaration", p.lineno(1), p.lineno(7))
     symtab.get_symbol(p[2]).lineno = p.lineno(2)
@@ -86,7 +87,8 @@ def p_identifier_types(p):
         cprint("Identifier", p.lineno(1), p.lineno(1))
         if (p[1][1] == "VARNAME"):
             if (symbol is None):
-                print("Variable accessed before declaration.")
+                print("ERROR AT", p.lineno(1))
+                print("Variable accessed before declaration")
             else:
                 print(symbol)
             p[0] = Literal("variable", p[1][0])
@@ -96,6 +98,7 @@ def p_identifier_types(p):
             p[0] = Literal("string", p[1][0])
     else:
         if (symbol is None):
+            print("ERROR AT", p.lineno(1))
             print("Array used before declaration.")
         else:
             print(symbol)
@@ -220,8 +223,11 @@ def p_logical_expr(p):
                  | logical_expr_bin
                  | empty
     """
-    #cprint("logical expr", p.lineno(2), p.lineno(2))        
-    pass
+    #cprint("logical expr", p.lineno(2), p.lineno(2))
+    if (len(p) == 2):
+        p[0] = p[1]
+    elif (len(p) == 4):
+        p[0] = LogicalExprBin(p[2], left = p[1], right = p[3], type=bool)
 
 def p_logical_expr_bin(p):
     """
@@ -240,7 +246,10 @@ def p_logical_expr_main(p):
     logical_expr_main : NOT logical_expr
                      | logical_expr
     """
-    pass
+    if (len(p) == 2):
+        p[0] = p[1]
+    else:
+        p[0] = LogicalExprBin(p[1], right=p[2], type=bool)
 
 def p_expr(p):
     """
@@ -296,8 +305,15 @@ if __name__ == "__main__":
     print()
     print()
     print()
-    print("Printing AST")
-    print(start_ast.children)
-    print(start_ast.data)
+    # print("Printing AST")
+    # print(start_ast.children)
+    # print(start_ast.data)
     draw_AST(start_ast)
-    icg.intermediate_codegen(start_ast)
+    res = icg.intermediate_codegen(start_ast, symtab)
+    res.print_three_address_code()
+    print()
+    print()
+    print()
+    print("Printing SYMBOL_TABLE AFTER ICG")
+    print(symtab)
+

@@ -66,6 +66,7 @@ class List(Node):
 
 class Print(Node):
     def __init__(self, string):
+        self.string = string
         if isinstance(string, Node):
             super().__init__("print", children=[string], data=[])
         else:
@@ -73,6 +74,7 @@ class Print(Node):
 
 class Until(Node):
     def __init__(self, condition, block):
+        print("Node: Until(condition = {}, block = {})".format(condition, block))
         super().__init__("Until", children=block, data=condition)
 
 class Foreach(Node):
@@ -80,16 +82,16 @@ class Foreach(Node):
         super().__init__("Foreach", children=block, data=iterator)
 
 class Decleration(Node):
-    def __init__(self, value, type=None):
+    def __init__(self, name, value=None):
         if isinstance(value, Node):
-            super().__init__("decleration", children=[value], data=[])
+            super().__init__("decleration", children=[value], data=[name])
         else:
-            super().__init__("decleration", children=[], data=value)
-        self.type = type
+            super().__init__("decleration", children=[], data=[name, value])
+        self.name = name
         self.value = value
 
     def __repr__(self):
-        return f'<{self.value}: {self.type}>'
+        return f'<{self.name}: {self.value}>'
 
 class LogicalExprBin(Node):
     def __init__(self, operator, left=None, right=None, type=None):
