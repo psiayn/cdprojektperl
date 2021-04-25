@@ -1,3 +1,4 @@
+from tabulate import tabulate
 from constructs.ast import *
 from constructs.symbol_table import SymbolInfo, SymbolTable
 
@@ -73,6 +74,29 @@ class IntermediateCode:
                 print("{} = {} + 1".format(dest, op))
             else:
                 print("{} = {} {} {}".format(dest, op1, operator, op2))
+    def __str__(self):
+        return str(
+            tabulate(
+                [
+                    [
+                        quad.dest if not isinstance(quad.dest, SymbolInfo) else quad.dest.name,
+                        # quad.operator,
+                        quad.operator if not isinstance(quad.operator, SymbolInfo) else quad.operator.name,
+                        # quad.op1,
+                        quad.op1 if not isinstance(quad.op1, SymbolInfo) else quad.op1.name,
+                        # quad.op2,
+                        quad.op2 if not isinstance(quad.op2, SymbolInfo) else quad.op2.name, ]
+                    for quad in self.code_list
+                ],
+                headers=[
+                    "Destination",
+                    "Operator",
+                    "Operand 1",
+                    "Operand 2",
+                ],
+                tablefmt="fancy_grid",
+            )
+        )
 
 def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
     # process all child nodes before parent
