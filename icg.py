@@ -15,7 +15,7 @@ class Quad:
 
     def print_info(self):
         print("{} = {} {} {}".format(self.dest, self.op1, self.operator, self.op2))
-
+    
 class IntermediateCode:
     def __init__(self):
         #  self.code_list: List[Quad] = {Quad.func_name: []}

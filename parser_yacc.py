@@ -6,6 +6,7 @@ from constructs.symbol_table import SymbolTable
 from constructs.ast_vis import draw_AST
 import icg
 import sys
+import ico
 
 symtab = SymbolTable()
 start_ast = Node("start", children=[])
@@ -316,4 +317,4 @@ if __name__ == "__main__":
     print()
     print("Printing SYMBOL_TABLE AFTER ICG")
     print(symtab)
-
+    ico.parse_ico(res)
