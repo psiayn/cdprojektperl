@@ -1,4 +1,4 @@
-from ply import yacc, lex
+from ply.ply import yacc, lex
 import lexer_lex
 from lexer_lex import tokens
 from constructs.ast import *

@@ -1,4 +1,4 @@
-import ply.lex as lex
+from ply.ply import lex
 
 # list of reserved tokens
 reserved = {
