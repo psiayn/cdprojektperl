@@ -37,6 +37,35 @@ def constant_folding(code_list: List[Quad], symtab: SymbolTable):
                 line.operator = '='
                 t = symtab.get_symbol(line.dest)
                 t.value = line.op1
+            elif line.op1.type == "string" and line.op2.type == "number":
+                if (line.operator == '+'):
+                    line.op1 = line.op1.value + line.op2.value
+                else:
+                    continue
+                line.op2 = None
+                line.operator = '='
+                t = symtab.get_symbol(line.dest)
+                t.value = line.op1
+            elif line.op1.type == "number" and line.op2.type == "string":
+                if (line.operator == '+'):
+                    line.op1 = line.op1.value + line.op2.value
+                else:
+                    continue
+                line.op2 = None
+                line.operator = '='
+                t = symtab.get_symbol(line.dest)
+                t.value = line.op1
+            elif line.op1.type == "string" and line.op2.type == "string":
+                if (line.operator == '+'):
+                    line.op1 = line.op1.value + line.op2.value
+                else:
+                    continue
+                line.op2 = None
+                line.operator = '='
+                t = symtab.get_symbol(line.dest)
+                t.value = line.op1
+            else:
+                continue
             print("{} = {} {} {}".format(line.dest, line.op1, line.operator, line.op2))
 
 

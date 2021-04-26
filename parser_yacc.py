@@ -44,8 +44,7 @@ def p_use(p):
 def p_var_decl(p: yacc.YaccProduction):
     """
     var_decl : MY VARNAME SEMI
-             | MY VARNAME EQ STRING SEMI
-             | MY VARNAME EQ NUMBER SEMI
+             | MY VARNAME EQ expr SEMI
     """
     if (len(p) == 4):
         symtab.add_if_not_exists(p[2][0])
@@ -53,8 +52,8 @@ def p_var_decl(p: yacc.YaccProduction):
         cprint("variable declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 6):
         symtab.add_if_not_exists(p[2][0])
-        symtab.get_symbol(p[2][0]).value = p[4][0]
-        p[0] = Decleration(p[2][0], p[4][0])
+        symtab.get_symbol(p[2][0]).value = p[4]
+        p[0] = Decleration(p[2][0], p[4])
         cprint("variable declaration", p.lineno(1), p.lineno(5))
     symtab.get_symbol(p[2][0]).lineno = p.lineno(2)
 
@@ -83,10 +82,11 @@ def p_identifier_types(p):
                     | NUMBER
                     | STRING
     """
-    symbol = symtab.get_symbol(p[1][0])
+    print("identifier_types")
     if (len(p) == 2):
         cprint("Identifier", p.lineno(1), p.lineno(1))
         if (p[1][1] == "VARNAME"):
+            symbol = symtab.get_symbol(p[1][0])
             if (symbol is None):
                 print("ERROR AT", p.lineno(1))
                 print("Variable accessed before declaration")
@@ -94,10 +94,13 @@ def p_identifier_types(p):
                 print(symbol)
             p[0] = Literal("variable", p[1][0])
         elif(p[1][1] == "NUMBER"):
+            cprint("Number", p.lineno(1), p.lineno(1))
             p[0] = Literal("number", p[1][0])
         else:
+            cprint("String", p.lineno(1), p.lineno(1))
             p[0] = Literal("string", p[1][0])
     else:
+        symbol = symtab.get_symbol(p[1][0])
         if (symbol is None):
             print("ERROR AT", p.lineno(1))
             print("Array used before declaration.")
@@ -265,6 +268,7 @@ def p_expr(p):
          | expr_bin
          | empty
     """
+    print("expr_bin")
     if (len(p) == 2):
         p[0] = p[1]
     elif (len(p) == 4):
@@ -277,8 +281,9 @@ def p_expr_bin_op(p):
           | identifier_types DIV identifier_types
           | identifier_types MUL identifier_types
     """
+    print("expr_bin_op")
     cprint("binary operation", p.lineno(1), p.lineno(1))
-    p[0] = BinOP(p[2], left = p[1], right=p[3])
+    p[0] = BinOP(p[2], left = p[3], right=p[1])
 
 def p_empty(p):
     """

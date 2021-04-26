@@ -2,7 +2,6 @@ from ply.ply import lex
 
 # list of reserved tokens
 reserved = {
-    'if': 'IF',
     'and': 'AND',
     'not': 'NOT',
     'or': 'OR',
@@ -65,10 +64,12 @@ t_COMMA = r'\,'
 # regex rules + other actions
 
 def t_STRING(t):
-    r'\".*\"'
+    # r'\".*\"'
+    r'\"[^\"]*\"'
     val = t.value.strip("\"")
     t.value = (val, "STRING")
     return t
+
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
     t.value = (float(t.value), "NUMBER")
