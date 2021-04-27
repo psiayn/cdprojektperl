@@ -4,6 +4,7 @@ print "Hello World!\n";
 print 42;
 print "bruh\n";
 my $test;
+$test = "1" + 2;
 my $lol = "brr" + "reee";
 my $bruh;
 my $kill = 123.124;

@@ -165,7 +165,7 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         ic.add_to_list(Quad(false_l, None, None, "Label: "))
 
     new_children = []
-    print("PRINTING NODE CHILDREN:", node.children)
+    # print("PRINTING NODE CHILDREN:", node.children)
     for child in node.children:
         new_children.append(_recur_codegen(child, ic, symtab))
 
@@ -173,16 +173,19 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
     return_val = None
 
     if isinstance(node, (BinOP, RelationalExpr, LogicalExprBin)):
-        if node.operator == '=':
+        if node.operator == '=' and new_children != []:
+            print("binop: ",node)
+            print(new_children)
             ic.add_to_list(Quad(new_children[1], new_children[0], None, node.operator))
             return_val = new_children[1]
-        else:
+        elif node.operator != '=':
             temp = ic.get_new_temp_var()
             symtab.add_if_not_exists(temp)
             temp_symbol = symtab.get_symbol(temp)
             temp_symbol.value = node
             if (len(new_children) < 2):
                 new_children.append(None)
+            print("temp_symbol: ", temp_symbol)
             ic.add_to_list(Quad(temp_symbol, new_children[0], new_children[1], node.operator))
             return_val = temp_symbol
 
@@ -191,8 +194,10 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         ic.add_to_list(Quad(None, None, None, "use"))
 
     elif isinstance(node, Literal):
+        print("literal: ", node)
         return_val = node
         if (node.type == "variable" and node.value == "$_"):
+            # print("variable literal")
             if (ic.loop_stack == []):
                 print("ERROR: CANNOT USE $_ as variable")
             else:
@@ -218,9 +223,10 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         ic.add_to_list(Quad(name, data, None, '='))
 
     #     ic.add_to_list(Quad(node.))
-    elif isinstance(node, Decleration):
-        ic.add_to_list(Quad(node.name, node.value, None, '='))
-        return_val = node
+    # elif isinstance(node, Decleration):
+    #     print('Decleration: ', node)
+    #     ic.add_to_list(Quad(node.name, node, None, '='))
+    #     return_val = node
 
     elif isinstance(node, Print):
         if (node.children is not None):

@@ -39,7 +39,7 @@ def constant_folding(code_list: List[Quad], symtab: SymbolTable):
                 t.value = line.op1
             elif line.op1.type == "string" and line.op2.type == "number":
                 if (line.operator == '+'):
-                    line.op1 = line.op1.value + line.op2.value
+                    line.op1 = line.op1.value + (str)(line.op2.value)
                 else:
                     continue
                 line.op2 = None
@@ -48,7 +48,7 @@ def constant_folding(code_list: List[Quad], symtab: SymbolTable):
                 t.value = line.op1
             elif line.op1.type == "number" and line.op2.type == "string":
                 if (line.operator == '+'):
-                    line.op1 = line.op1.value + line.op2.value
+                    line.op1 = (str)(line.op1.value) + line.op2.value
                 else:
                     continue
                 line.op2 = None
@@ -67,7 +67,6 @@ def constant_folding(code_list: List[Quad], symtab: SymbolTable):
             else:
                 continue
             print("{} = {} {} {}".format(line.dest, line.op1, line.operator, line.op2))
-
 
 def dead_code(code_list: List[Quad]):
     ignore_list = ['call_return', 'goto', 'if', 'ifFalse', 'Label: ', 'push', 'print', 'use', 'call']

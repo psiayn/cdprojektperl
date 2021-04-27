@@ -44,16 +44,28 @@ def p_use(p):
 def p_var_decl(p: yacc.YaccProduction):
     """
     var_decl : MY VARNAME SEMI
+             | MY VARNAME EQ identifier_types SEMI
              | MY VARNAME EQ expr SEMI
     """
     if (len(p) == 4):
+        print('var_decl', p[2], "belieb")
         symtab.add_if_not_exists(p[2][0])
-        p[0] = Decleration(p[2][0])
+        p[0] = BinOP("=", Literal("variable", p[2][0]), Literal("string", ""))
         cprint("variable declaration", p.lineno(1), p.lineno(3))
     elif (len(p) == 6):
+        print('var_decl', p[2], p[4])
         symtab.add_if_not_exists(p[2][0])
         symtab.get_symbol(p[2][0]).value = p[4]
-        p[0] = Decleration(p[2][0], p[4])
+        if isinstance(p[4], Node):
+            val = p[4]
+        else:
+            val = p[4][0]
+            if ( val.isnumeric()):
+                print("NUMBER", p[4])
+                val = Literal('number', p[4][0])
+            else:
+                val = Literal('string', p[4][0])
+        p[0] = BinOP('=', Literal("variable", p[2][0]), val)
         cprint("variable declaration", p.lineno(1), p.lineno(5))
     symtab.get_symbol(p[2][0]).lineno = p.lineno(2)
 
@@ -119,6 +131,15 @@ def p_var_op(p):
            | DECREMENT identifier_types
     """
     if('=' in p):
+        print("var_op: ", p[1], p[3])
+        t = symtab.get_symbol(p[1].value)
+        if t is None:
+            print(symtab)
+            t = symtab.get_symbol(p[1])
+        print(t)
+        t.value = p[3]
+        t = symtab.get_symbol(p[1].value)
+        print("breh: ", t)
         p[0] = BinOP('=', p[1], p[3])
         cprint("Variable reassignment", p.lineno(1), p.lineno(4))
     elif('++' in p):
@@ -320,6 +341,11 @@ if __name__ == "__main__":
     print()
     print()
     print()
+    print("Printing SYMBOL_TABLE")
+    print(symtab)
+    print()
+    print()
+    print()
     print("PRINTING QUAD TABLE")
     print(res)
     print()
@@ -327,8 +353,3 @@ if __name__ == "__main__":
     print()
     res = ico.parse_ico(res, symtab)
     res.print_three_address_code()
-    print()
-    print()
-    print()
-    print("Printing SYMBOL_TABLE AFTER ICG")
-    print(symtab)
