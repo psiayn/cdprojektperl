@@ -165,8 +165,6 @@ def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
 
     if isinstance(node, (BinOP, RelationalExpr, LogicalExprBin)):
         if node.operator == '=' and new_children != []:
-            print("binop: ",node)
-            print(new_children)
             ic.add_to_list(Quad(new_children[1], new_children[0], None, node.operator))
             return_val = new_children[1]
         elif node.operator != '=':
@@ -176,7 +174,6 @@ def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
             temp_symbol.value = node
             if (len(new_children) < 2):
                 new_children.append(None)
-            print("temp_symbol: ", temp_symbol)
             ic.add_to_list(Quad(temp_symbol, new_children[0], new_children[1], node.operator))
             return_val = temp_symbol
 
@@ -185,10 +182,8 @@ def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
         ic.add_to_list(Quad(None, None, None, "use"))
 
     elif isinstance(node, Literal):
-        print("literal: ", node)
         return_val = node
         if (node.type == "variable" and node.value == "$_"):
-            # print("variable literal")
             if (ic.loop_stack == []):
                 print("ERROR: CANNOT USE $_ as variable")
             else:
@@ -198,13 +193,11 @@ def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
                 temp.value = ic.loop_stack[-1][1] + '[' + ic.loop_stack[-1][0].name + ']'
                 ic.add_to_list(Quad(temp.name, temp.value, None, '='))
                 return_val = temp
-            print("Literal:", node.value)
 
     elif isinstance(node, List):
         return_val = new_children
 
     elif isinstance(node, Array):
-        print("ARRAY", node)
         data = node.data
         name = node.name
         if isinstance(data, List):
@@ -216,16 +209,12 @@ def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
     elif isinstance(node, Print):
         if (node.children is not None):
             t = new_children[0]
-            print(t)
             for i in t:
                 ic.add_to_list(Quad(i, None, None, "push"))
-            print(t)
             ic.add_to_list(Quad(None, None, None, "print"))
         else:
             ic.add_to_list(Quad(node.data, None, None, "print"))
     else:
-        print(f"Intermediate code is not yet implemented for node {node}")
-
         return_val = node
 
     return return_val

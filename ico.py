@@ -186,6 +186,19 @@ def constant_folding(code_list: List[Quad], symtab: SymbolTable):
                 t.value = line.op1
             else:
                 continue
+        elif (isinstance(line.op1, Literal) and isinstance(line.op2, Literal) and (line.operator in ['and', 'or'])):
+            if line.operator == 'and':
+                line.op1 = line.op1.value and line.op2.value
+                line.op2 = None
+                line.operator = '='
+                t = symtab.get_symbol(line.dest)
+                t.value = line.op1
+            elif line.operator == 'or':
+                line.op1 = line.op1.value or line.op2.value
+                line.op2 = None
+                line.operator = '='
+                t = symtab.get_symbol(line.dest)
+                t.value = line.op1
             #print("{} = {} {} {}".format(line.dest, line.op1, line.operator, line.op2))
     
     return code_list
@@ -243,18 +256,17 @@ def dead_code(code_list: List[Quad]):
 def parse_ico(ic: IntermediateCode, symtab: SymbolTable):
     # print("Bfore optimisation\n\n")
     # ic.print_three_address_code()
-    print("Constant propagation")
+    print("Constant propagation and folding")
     ic.code_list = constant_propagation(ic.code_list)
     # print("\n\n\nAfter propagation\n\n")
     # ic.print_three_address_code()
-    print("Constant folding")
+    # print("Constant folding")
     ic.code_list = constant_folding(ic.code_list, symtab)
     # print("\n\n\nAfter folding\n\n")
-    # ic.print_three_address_code()
-    #print("bonjour")
+    ic.print_three_address_code()
     print("Dead Code Elimination")
     ic.code_list = dead_code(ic.code_list)
-    # print("\n\n\nAfter dead code removal\n\n")
+    print("\n\n\nAfter dead code removal\n\n")
     return ic
 
 if __name__ == '__main__':
