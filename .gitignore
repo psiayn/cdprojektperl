@@ -1,5 +1,5 @@
-*.dot
-*.png
+ast.dot
+ast.png
 env
 *.out
 __pycache__
