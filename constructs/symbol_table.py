@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Optional, Any
 from collections import defaultdict
 from tabulate import tabulate
+
 scopes = {'until': 0, 'foreach': 0}
 
 @dataclass

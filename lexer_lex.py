@@ -1,3 +1,4 @@
+#from ply import lex
 from ply.ply import lex
 
 reserved = {

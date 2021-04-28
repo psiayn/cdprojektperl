@@ -19,9 +19,9 @@ class BinOP(Node):
         if isinstance(right, Node):
             children_.append(right)
         super().__init__("Binary", children=children_, data=operator)
-        print("self.left", self.left)
-        print("self.right", self.right)
-        print("self.operator", self.operator)
+        #print("self.left", self.left)
+        #print("self.right", self.right)
+        #print("self.operator", self.operator)
 
     def __repr__(self):
         return f'<{self.left}, {self.right}, {self.operator}>'
@@ -72,7 +72,7 @@ class Print(Node):
 
 class Until(Node):
     def __init__(self, condition, block):
-        print("Node: Until(condition = {}, block = {})".format(condition, block))
+        #print("Node: Until(condition = {}, block = {})".format(condition, block))
         super().__init__("Until", children=block, data=condition)
 
 class Foreach(Node):
@@ -102,9 +102,9 @@ class LogicalExprBin(Node):
         if isinstance(right, Node):
             children_.append(right)
         super().__init__("LogicalBinary", children=children_, data=type)
-        print("self.left", self.left)
-        print("self.right", self.right)
-        print("self.operator", self.operator)
+        #print("self.left", self.left)
+        #print("self.right", self.right)
+        #print("self.operator", self.operator)
 
     def __repr__(self):
         return f'<{self.left}, {self.right}, {self.operator}>'
@@ -120,9 +120,9 @@ class RelationalExpr(Node):
         if isinstance(right, Node):
            children_.append(right)
         super().__init__("RelationalExpr", children=children_, data=type)
-        print("self.left", self.left)
-        print("self.right", self.right)
-        print("self.operator", self.operator)
+        #print("self.left", self.left)
+        #print("self.right", self.right)
+        #print("self.operator", self.operator)
 
     def __repr__(self):
         return f'<{self.left}, {self.right}, {self.operator}>'
