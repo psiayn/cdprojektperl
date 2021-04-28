@@ -42,7 +42,7 @@ def p_use(p):
     p[0] = Use(p[2])
     cprint("use statement", p.lineno(1), p.lineno(3))
 
-def p_var_decl(p: yacc.YaccProduction):
+def p_var_decl(p):
     """
     var_decl : MY VARNAME SEMI
              | MY VARNAME EQ identifier_types SEMI
@@ -333,10 +333,9 @@ if __name__ == "__main__":
     print()
     print()
     print()
-    # print("Printing AST")
-    # print(start_ast.children)
-    # print(start_ast.data)
+    print("Generating AST")
     draw_AST(start_ast)
+    print("Intermediate Code Generation")
     res = icg.intermediate_codegen(start_ast, symtab)
     res.print_three_address_code()
     print()

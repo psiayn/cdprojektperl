@@ -1,7 +1,5 @@
-#from ply import lex
 from ply.ply import lex
 
-# list of reserved tokens
 reserved = {
     'and': 'AND',
     'not': 'NOT',
@@ -13,7 +11,6 @@ reserved = {
     'foreach' : 'FOREACH'
 }
 
-# list of token names
 tokens = (
     "NUMBER",
     "STRING",
@@ -40,13 +37,6 @@ tokens = (
     "COMMENT",
 ) + tuple(reserved.values())
 
-# list of possible states
-# states = (
-#         ('code', 'exclusive')
-# )
-
-# specifying regex for simple tokens
-# t_PLUS = r'\+'
 t_MIN = r'\-'
 t_MUL = r'\*'
 t_DIV = r'/'
@@ -65,7 +55,6 @@ t_COMMA = r'\,'
 # regex rules + other actions
 
 def t_STRING(t):
-    # r'\".*\"'
     r'\"[^\"]*\"'
     val = t.value.strip("\"")
     t.value = (val, "STRING")

@@ -19,7 +19,6 @@ class Quad:
     
 class IntermediateCode:
     def __init__(self):
-        #  self.code_list: List[Quad] = {Quad.func_name: []}
         self.code_list: List[Quad] = []
         self.temp_var_count = 0
         self.label_count = 0
@@ -80,11 +79,8 @@ class IntermediateCode:
                 [
                     [
                         quad.dest if not isinstance(quad.dest, SymbolInfo) else quad.dest.name,
-                        # quad.operator,
                         quad.operator if not isinstance(quad.operator, SymbolInfo) else quad.operator.name,
-                        # quad.op1,
                         quad.op1 if not isinstance(quad.op1, SymbolInfo) else quad.op1.name,
-                        # quad.op2,
                         quad.op2 if not isinstance(quad.op2, SymbolInfo) else quad.op2.name, ]
                     for quad in self.code_list
                 ],
@@ -98,9 +94,7 @@ class IntermediateCode:
             )
         )
 
-def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
-    # process all child nodes before parent
-    # ast is from right to left, so need to traverse in reverse order
+def recursive_icg(node, ic: IntermediateCode, symtab: SymbolTable):
 
     if isinstance(node, Until):
         l = ic.get_new_label()
@@ -108,15 +102,14 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         true_l = ic.get_new_label()
         false_l = ic.get_new_label()
         condition = node.data
-        condition_res = _recur_codegen(condition, ic, symtab)
+        condition_res = recursive_icg(condition, ic, symtab)
         ic.add_to_list(Quad(true_l, condition_res.name, None, "if"))
         ic.add_to_list(Quad(false_l, None, None, "ifFalse"))
         ic.add_to_list(Quad(true_l, None, None, "Label: "))
         symtab.enter_scope()
         body = node.children
-        # body.reverse()
         for i in body:
-            _recur_codegen(i, ic, symtab)
+            recursive_icg(i, ic, symtab)
         symtab.leave_scope()
         node.children = []
         ic.add_to_list(Quad(l, None, None, "goto"))
@@ -146,7 +139,7 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         r = symtab.get_symbol(t_l)
         ic.add_to_list(Quad(r.name, i.name, l.name, '<'))
         # checking condition
-        # res = _recur_codegen(iterator, ic, symtab)
+        # res = recursive_icg(iterator, ic, symtab)
         ic.add_to_list(Quad(true_l, r.name, None, "if"))
         ic.add_to_list(Quad(false_l, None, None, "ifFalse"))
         ic.add_to_list(Quad(true_l, None, None, "Label: "))
@@ -154,9 +147,8 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         symtab.enter_scope()
         body = node.children
         ic.loop_stack.append((i, iterator))
-        # body.reverse()
         for ibrr in body:
-            _recur_codegen(ibrr, ic, symtab)
+            recursive_icg(ibrr, ic, symtab)
         symtab.leave_scope()
         # i++
         ic.add_to_list(Quad(i.name, i.name, None, '++'))
@@ -165,9 +157,8 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
         ic.add_to_list(Quad(false_l, None, None, "Label: "))
 
     new_children = []
-    # print("PRINTING NODE CHILDREN:", node.children)
     for child in node.children:
-        new_children.append(_recur_codegen(child, ic, symtab))
+        new_children.append(recursive_icg(child, ic, symtab))
 
     new_children.reverse()
     return_val = None
@@ -222,12 +213,6 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
             name = name + "[" + str(int(node.index)) + "]"
         ic.add_to_list(Quad(name, data, None, '='))
 
-    #     ic.add_to_list(Quad(node.))
-    # elif isinstance(node, Decleration):
-    #     print('Decleration: ', node)
-    #     ic.add_to_list(Quad(node.name, node, None, '='))
-    #     return_val = node
-
     elif isinstance(node, Print):
         if (node.children is not None):
             t = new_children[0]
@@ -248,5 +233,5 @@ def _recur_codegen(node, ic: IntermediateCode, symtab: SymbolTable):
 def intermediate_codegen(ast, symtab):
     ic = IntermediateCode()
 
-    _recur_codegen(ast, ic, symtab)
+    recursive_icg(ast, ic, symtab)
     return ic

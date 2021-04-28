@@ -7,8 +7,6 @@ scopes = {'until': 0, 'foreach': 0}
 
 @dataclass
 class SymbolInfo:
-    """Stores information related to a symbol"""
-
     name: str
     scope_id: str
     lineno: Optional[int] = None
@@ -16,28 +14,25 @@ class SymbolInfo:
 
 
 class SymbolTable:
-    """Stores all identifiers, literals and information
-    related to them"""
-
     def __init__(self):
         self.stack = [{}]
         self.symbols = []
         self.cur_scope = "1"
-        self.depth = 1
-        self.scopes_at_depth = defaultdict(lambda: 0)
-        self.scopes_at_depth[0] = 1
+        self.level = 1
+        self.scopes_at_level = defaultdict(lambda: 0)
+        self.scopes_at_level[0] = 1
 
     def enter_scope(self):
-        self.depth += 1
-        self.scopes_at_depth[self.depth] += 1
-        self.cur_scope += f".{self.scopes_at_depth[self.depth]}"
+        self.level += 1
+        self.scopes_at_level[self.level] += 1
+        self.cur_scope += f".{self.scopes_at_level[self.level]}"
         self.stack.append({})
 
     def leave_scope(self):
-        self.depth -= 1
+        self.level -= 1
         ind_of_dot = self.cur_scope.rfind(".")
         self.cur_scope = self.cur_scope[:ind_of_dot]
-        self.scopes_at_depth[self.depth + 2] = 0
+        self.scopes_at_level[self.level + 2] = 0
         self.stack.pop()
 
     def add_if_not_exists(self, symbol):
@@ -52,13 +47,9 @@ class SymbolTable:
         return new_symbol
 
     def get_symbol(self, symbol):
-        """Finds the symbol in the closest symtab
-
-        Returns None if symbol doesn't exist
-        """
-        for symtab_ in reversed(self.stack):
-            if symbol in symtab_:
-                return symtab_[symbol]
+        for symtab in reversed(self.stack):
+            if symbol in symtab:
+                return symtab[symbol]
 
     def __str__(self):
         return str(

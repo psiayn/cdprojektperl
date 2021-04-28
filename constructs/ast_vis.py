@@ -4,28 +4,23 @@ from constructs.ast import Node
 import constructs.ast as ast
 import pydot
 
+def get_node_name(node: Node, node_cntr: defaultdict):
+    return f"{node.name}_{node_cntr[node.name]}"
 
-def get_node_name(node: Node, cache: defaultdict):
-    return f"{node.name}_{cache[node.name]}"
-
-
-def get_node_label(node: Node, cache: defaultdict):
+def get_node_label(node: Node, node_cntr: defaultdict):
     return f"{node.name}\n{node.data}"
 
+def recursive_draw(graph: pydot.Graph, node_cntr: defaultdict, node: Node, rank: int = 0):
 
-def _recur_draw(graph: pydot.Graph, cache: defaultdict, node: Node, rank: int = 0):
-    # cache[node.name] += 1
-
-    node_name = get_node_name(node, cache)
-    # graph.add_node(pydot.Node(node_name, label=node_name, color="blue"))
+    node_name = get_node_name(node, node_cntr)
 
     children: List[pydot.Node] = []
 
     for child in node.children:
-        cache[child.name] += 1
+        node_cntr[child.name] += 1
 
-        child_name = get_node_name(child, cache)
-        child_label = get_node_label(child, cache)
+        child_name = get_node_name(child, node_cntr)
+        child_label = get_node_label(child, node_cntr)
 
         fillcolor = "turquoise"
         color = "red"
@@ -74,7 +69,7 @@ def _recur_draw(graph: pydot.Graph, cache: defaultdict, node: Node, rank: int = 
 
         graph.add_edge(pydot.Edge(node_name, child_name, weight=1.5))
 
-        _recur_draw(graph, cache, child, rank + 1)
+        recursive_draw(graph, node_cntr, child, rank + 1)
 
 def draw_AST(ast: Node):
     graph = pydot.Dot(
@@ -85,12 +80,12 @@ def draw_AST(ast: Node):
         splines="ortho",
         overlap=False,
     )
-    cache = defaultdict(lambda: 0)
+    node_cntr = defaultdict(lambda: 0)
 
-    node_name = get_node_name(ast, cache)
+    node_name = get_node_name(ast, node_cntr)
     graph.add_node(pydot.Node(node_name, label="START", fillcolor="white"))
 
-    _recur_draw(graph, cache, ast)
+    recursive_draw(graph, node_cntr, ast)
 
     graph.write("ast.dot")
     graph.write("ast.png", format="png")

@@ -52,8 +52,6 @@ class Use(Node):
         super().__init__("Use Statement", children=[], data=package)
 
 class List(Node):
-    """Node to store literals"""
-
     def __init__(self, children):
         super().__init__("LIST", children=children, data=[])
         self.append = self.add_child

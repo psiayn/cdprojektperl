@@ -241,21 +241,20 @@ def dead_code(code_list: List[Quad]):
     return opt_code_list
 
 def parse_ico(ic: IntermediateCode, symtab: SymbolTable):
-    #print("lol nub")
-    # for i in ic.code_list:
-    #     if i.print_info() is not None:
-    #         print(i.print_info())
-    print("Bfore optimisation\n\n")
-    ic.print_three_address_code()
+    # print("Bfore optimisation\n\n")
+    # ic.print_three_address_code()
+    print("Constant propagation")
     ic.code_list = constant_propagation(ic.code_list)
-    print("\n\n\nAfter propagation\n\n")
-    ic.print_three_address_code()
+    # print("\n\n\nAfter propagation\n\n")
+    # ic.print_three_address_code()
+    print("Constant folding")
     ic.code_list = constant_folding(ic.code_list, symtab)
-    print("\n\n\nAfter folding\n\n")
-    ic.print_three_address_code()
+    # print("\n\n\nAfter folding\n\n")
+    # ic.print_three_address_code()
     #print("bonjour")
+    print("Dead Code Elimination")
     ic.code_list = dead_code(ic.code_list)
-    print("\n\n\nAfter dead code removal\n\n")
+    # print("\n\n\nAfter dead code removal\n\n")
     return ic
 
 if __name__ == '__main__':
